@@ -1,8 +1,8 @@
-require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/db");
 const path = require("path");
 const cors = require("cors");
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
@@ -24,8 +24,10 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/search", searchRoutes);
 
+console.log("MONGODB_URI:", process.env.MONGODB_URI);
+
 const PORT = process.env.PORT || 5000;
-connectDB(process.env.MONGO_URI)
+connectDB(process.env.MONGODB_URI)
   .then(() =>
     app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
   )
