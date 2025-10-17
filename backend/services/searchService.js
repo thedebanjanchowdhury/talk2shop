@@ -43,9 +43,13 @@ async function ensureIndex() {
   } else {
     const desc = await pc.describeIndex(PINECONE_INDEX_NAME);
     if (desc.spec?.serverless) {
-      console.log(`Pinecone index ${PINECONE_INDEX_NAME} already exists and is serverless`);
+      console.log(
+        `Pinecone index ${PINECONE_INDEX_NAME} already exists and is serverless`
+      );
     } else {
-      throw new Error("Existing index is not serverless. Please delete it manually.");
+      throw new Error(
+        "Existing index is not serverless. Please delete it manually."
+      );
     }
   }
   index = pc.index(PINECONE_INDEX_NAME);
@@ -68,7 +72,9 @@ async function indexProduct(product) {
   }
 
   const { _id, title, description, category, subcategory } = product;
-  const text = `${title} ${description || ""} ${category || ""} ${subcategory || ""}`;
+  const text = `${title} ${description || ""} ${category || ""} ${
+    subcategory || ""
+  }`;
   const embedding = await getEmbedding(text);
 
   await index.upsert([
@@ -92,6 +98,8 @@ async function semanticSearch(query, { category, subcategory, topK = 5 } = {}) {
     await ensureIndex();
   }
 
+  if (!query || !query.trim()) return [];
+
   const embedding = await getEmbedding(query);
 
   const res = await index.query({
@@ -104,7 +112,7 @@ async function semanticSearch(query, { category, subcategory, topK = 5 } = {}) {
     },
   });
 
-  return res.matches.map((match) => ({
+  return (res.matches || []).map((match) => ({
     id: match.id,
     score: match.score,
     ...match.metadata,
@@ -113,4 +121,5 @@ async function semanticSearch(query, { category, subcategory, topK = 5 } = {}) {
 
 // Initialize index on module load
 ensureIndex().catch(console.error);
+
 module.exports = { indexProduct, semanticSearch, ensureIndex };
