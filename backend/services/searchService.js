@@ -1,27 +1,30 @@
 const { Pinecone } = require("@pinecone-database/pinecone");
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 
+// ENV
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_INDEX_NAME = "talk2shop";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-// AI AND VECTOR DATABASE SETUP
-const ai = new GoogleGenAI(GEMINI_API_KEY);
+// CLIENTS
+const ai = new GoogleGenerativeAI(GEMINI_API_KEY);
 const pc = new Pinecone({ apiKey: PINECONE_API_KEY });
+
 let index = null;
 let indexInitialized = false;
 
-// Ensure Pinecone Index Exists & is Dense
+// Ensure Pinecone Index Exists
 async function ensureIndex() {
   const indexes = await pc.listIndexes();
-  const existing = indexes.indexes.find((i) => i.name === PINECONE_INDEX_NAME);
+  const exists = indexes.indexes.find((i) => i.name === PINECONE_INDEX_NAME);
 
-  if (!existing) {
-    console.log(`⚡ Creating Pinecone index: ${PINECONE_INDEX_NAME}...`);
+  if (!exists) {
+    console.log(`Creating Pinecone index: ${PINECONE_INDEX_NAME}`);
+
     await pc.createIndex({
       name: PINECONE_INDEX_NAME,
-      dimension: 3072,
+      dimension: 768, // required for text-embedding-004
       metric: "cosine",
       spec: {
         serverless: {
@@ -30,74 +33,54 @@ async function ensureIndex() {
         },
       },
     });
+
     let ready = false;
     while (!ready) {
       const desc = await pc.describeIndex(PINECONE_INDEX_NAME);
       if (desc.status?.ready) ready = true;
-      else {
-        console.log("Waiting for index to be ready...");
-        await new Promise((res) => setTimeout(res, 5000));
-      }
+      else await new Promise((res) => setTimeout(res, 5000));
     }
-    console.log(`Pinecone index ${PINECONE_INDEX_NAME} created!`);
+    console.log(`Pinecone index ${PINECONE_INDEX_NAME} ready`);
   } else {
-    const desc = await pc.describeIndex(PINECONE_INDEX_NAME);
-    if (desc.spec?.serverless) {
-      console.log(
-        `Pinecone index ${PINECONE_INDEX_NAME} already exists and is serverless`
-      );
-    } else {
-      throw new Error(
-        "Existing index is not serverless. Please delete it manually."
-      );
-    }
+    console.log(`Pinecone index ${PINECONE_INDEX_NAME} exists`);
   }
+
   index = pc.index(PINECONE_INDEX_NAME);
   indexInitialized = true;
 }
 
-// EMBEDDING FUNCTION
+// Embedding function
 async function getEmbedding(text) {
-  const response = await ai.models.embedContent({
-    model: "gemini-embedding-001",
-    contents: text,
-  });
-  return response.embeddings[0].values;
+  const model = ai.getGenerativeModel({ model: "text-embedding-004" });
+  const result = await model.embedContent(text);
+  return result.embedding.values;
 }
 
-// VECTORDB INSERTION
+// Insert product vector
 async function indexProduct(product) {
-  if (!indexInitialized) {
-    await ensureIndex();
-  }
+  if (!indexInitialized) await ensureIndex();
 
   const { _id, title, description, category, subcategory } = product;
   const text = `${title} ${description || ""} ${category || ""} ${
     subcategory || ""
   }`;
+
   const embedding = await getEmbedding(text);
 
   await index.upsert([
     {
       id: _id.toString(),
       values: embedding,
-      metadata: {
-        title,
-        description,
-        category,
-        subcategory,
-      },
+      metadata: { title, description, category, subcategory },
     },
   ]);
+
   return { success: true };
 }
 
-// SEMANTIC SEARCH with category & subcategory filter
+// Semantic search
 async function semanticSearch(query, { category, subcategory, topK = 5 } = {}) {
-  if (!indexInitialized) {
-    await ensureIndex();
-  }
-
+  if (!indexInitialized) await ensureIndex();
   if (!query || !query.trim()) return [];
 
   const embedding = await getEmbedding(query);
@@ -107,19 +90,19 @@ async function semanticSearch(query, { category, subcategory, topK = 5 } = {}) {
     topK,
     includeMetadata: true,
     filter: {
-      ...(category ? { category } : {}),
-      ...(subcategory ? { subcategory } : {}),
+      ...(category && { category }),
+      ...(subcategory && { subcategory }),
     },
   });
 
-  return (res.matches || []).map((match) => ({
-    id: match.id,
-    score: match.score,
-    ...match.metadata,
+  return (res.matches || []).map((m) => ({
+    id: m.id,
+    score: m.score,
+    ...m.metadata,
   }));
 }
 
-// Initialize index on module load
+// Init index on load
 ensureIndex().catch(console.error);
 
 module.exports = { indexProduct, semanticSearch, ensureIndex };
