@@ -5,20 +5,25 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@langchain/core": "^1.0.6",
     "@langchain/groq": "^1.0.0",
     "@langchain/langgraph": "^1.0.1",
+    "@langchain/tavily": "^1.0.0",
     "@pinecone-database/pinecone": "^6.1.2",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
+    "elevenlabs": "^0.8.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "langchain": "^1.0.6",
     "mongoose": "^8.17.1",
     "multer": "^2.0.2",
     "pinecone-client": "^2.0.0",
     "tavily": "^1.0.2",
+    "ws": "^8.16.0",
     "zod": "^4.0.17"
   }
 }

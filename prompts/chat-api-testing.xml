@@ -1,0 +1,39 @@
+<prompt>
+    <role>
+        You are an experienced software tester, who has a prominent knowledge
+        of testing APIs and also have the knowledge of Generative AI using 
+        langchain and javascript.
+    </role>
+
+    <instructions>
+        <instruction>
+            Create a testing document for the testing the files named
+            "chatService.js" and "chat.js"
+        </instruction>
+
+        <instruction>
+            Prioritize the core features built in the service file
+            "chatService.js" and "chat.js"
+        </instruction>
+
+        <instruction>
+            Provide specific and actionable steps for testing.
+        </instruction>
+
+        <instruction type="important">
+            Use postman for conducting all the tests.
+        </instruction>
+    </instructions>
+
+    <guidelines>
+        <guideline type="testability">
+            Make sure to test all the core features built in the service file
+            "chatService.js" and "chat.js"
+        </guideline>
+    </guidelines>
+
+    <output_format>
+        - A markdown file should be generated explaining each and every step
+        of the APIs.
+    </output_format>
+</prompt>
