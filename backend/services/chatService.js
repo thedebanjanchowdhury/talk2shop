@@ -2,7 +2,7 @@ const { ChatGroq } = require("@langchain/groq");
 const { TavilySearch } = require("@langchain/tavily");
 const { DynamicStructuredTool } = require("@langchain/core/tools");
 const { z } = require("zod");
-const { createAgent } = require("langchain");
+const { createReactAgent } = require("@langchain/langgraph/prebuilt");
 const userModel = require("../models/User");
 const Product = require("../models/Product");
 const { semanticSearch } = require("./searchService"); // Import semantic search
@@ -155,9 +155,9 @@ const llm = new ChatGroq({
   maxTokens: 2000
 });
 
-// Create agent using the new LangChain v1.0 API
-const agent = createAgent({
-  model: llm,
+// Create agent using LangGraph prebuilt agent which is more robust
+const agent = createReactAgent({
+  llm,
   tools,
 });
 

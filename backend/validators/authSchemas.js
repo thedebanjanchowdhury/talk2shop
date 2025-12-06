@@ -6,7 +6,7 @@ const register = z.object({
       .string()
       .min(3, "Name must be at least 3 characters")
       .max(50, "Name must be at most 50 characters"),
-    email: z.email(),
+    email: z.string().email(),
     password: z
       .string()
       .min(6, "Password must be at least 6 characters")

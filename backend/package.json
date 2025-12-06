@@ -7,7 +7,7 @@
     "@google/generative-ai": "^0.24.1",
     "@langchain/core": "^1.0.6",
     "@langchain/groq": "^1.0.0",
-    "@langchain/langgraph": "^1.0.1",
+    "@langchain/langgraph": "^1.0.4",
     "@langchain/tavily": "^1.0.0",
     "@pinecone-database/pinecone": "^6.1.2",
     "axios": "^1.11.0",
@@ -18,12 +18,12 @@
     "elevenlabs": "^0.8.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "langchain": "^1.0.6",
+    "langchain": "^0.1.37",
     "mongoose": "^8.17.1",
     "multer": "^2.0.2",
     "pinecone-client": "^2.0.0",
     "tavily": "^1.0.2",
     "ws": "^8.16.0",
-    "zod": "^3.25.32"
+    "zod": "^4.1.13"
   }
 }
