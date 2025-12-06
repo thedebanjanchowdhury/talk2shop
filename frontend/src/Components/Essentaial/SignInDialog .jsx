@@ -12,46 +12,75 @@ export default function SignInDialog({ onClose, onSuccess, initialTab }) {
     const [lastName, setLastName] = useState("");
     const [message, setMessage] = useState({ text: "", type: "" });
 
-    // Demo credentials for sign-in (if we decide to keep a separate sign-in form)
-    const demoEmail = "user@example.com";
-    const demoPassword = "password";
+    const isSignInTab = activeTab === "signin";
 
-    const handleSignIn = (e) => {
+    const handleSignIn = async (e) => {
         e.preventDefault();
         setMessage({ text: "", type: "" }); 
-        // This simplified sign-in will only be accessible via the 'Sign In' link if activeTab is 'signin'
-        if (email === demoEmail && password === demoPassword) {
-            setMessage({ text: "Login Successful! Redirecting...", type: "success" });
-            setTimeout(() => {
-                onSuccess(); 
-            }, 1000);
-        } else {
-            setMessage({ text: "Invalid credentials. Try: user@example.com / password", type: "error" });
+        
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMessage({ text: "Login Successful! Redirecting...", type: "success" });
+                localStorage.setItem('token', data.token); // Store token
+                console.log("User Token:", data.token); // Log token to console
+                setTimeout(() => {
+                    onSuccess(data.user); 
+                }, 1000);
+            } else {
+                setMessage({ text: data.message || "Login failed", type: "error" });
+            }
+        } catch (error) {
+            setMessage({ text: "An error occurred. Please try again.", type: "error" });
         }
     };
 
-    const handleSignUp = (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
         setMessage({ text: "", type: "" }); 
-        // Simplified sign-up simulation
+        
         if (firstName && lastName && email && password) {
-            setMessage({ text: "Signed up! Please proceed to sign in.", type: "success" });
-            // Optionally switch to sign-in tab after successful signup
-            setTimeout(() => {
-                setActiveTab("signin");
-                setMessage({ text: "", type: "" });
-                // Clear form fields
-                setFirstName('');
-                setLastName('');
-                setEmail('');
-                setPassword('');
-            }, 1500);
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        name: `${firstName} ${lastName}`, 
+                        email, 
+                        password 
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    setMessage({ text: "Signed up! Please proceed to sign in.", type: "success" });
+                    localStorage.setItem('token', data.token); // Store token
+                    console.log("User Token:", data.token); // Log token to console
+                    setTimeout(() => {
+                        onSuccess(data.user); 
+                    }, 1500);
+                } else {
+                    setMessage({ text: data.message || "Registration failed", type: "error" });
+                }
+            } catch (error) {
+                setMessage({ text: "An error occurred. Please try again.", type: "error" });
+            }
         } else {
             setMessage({ text: "Please fill in all fields.", type: "error" });
         }
     };
-
-    const isSignInTab = activeTab === "signin";
 
     // Reusing the Navbar's dark background for the overlay, and a slightly lighter dark for the dialog.
     // Using deep purple and pink gradients as seen in the image.

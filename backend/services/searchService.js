@@ -17,35 +17,59 @@ let indexInitialized = false;
 // Ensure Pinecone Index Exists
 async function ensureIndex() {
   const indexes = await pc.listIndexes();
-  const exists = indexes.indexes.find((i) => i.name === PINECONE_INDEX_NAME);
+  const indexName = PINECONE_INDEX_NAME;
+  const existingIndex = indexes.indexes.find((i) => i.name === indexName);
 
-  if (!exists) {
-    console.log(`Creating Pinecone index: ${PINECONE_INDEX_NAME}`);
-
-    await pc.createIndex({
-      name: PINECONE_INDEX_NAME,
-      dimension: 768, // required for text-embedding-004
-      metric: "cosine",
-      spec: {
-        serverless: {
-          cloud: "aws",
-          region: "us-east-1",
-        },
-      },
-    });
-
-    let ready = false;
-    while (!ready) {
-      const desc = await pc.describeIndex(PINECONE_INDEX_NAME);
-      if (desc.status?.ready) ready = true;
-      else await new Promise((res) => setTimeout(res, 5000));
+  if (existingIndex) {
+    // Check if dimension matches
+    const desc = await pc.describeIndex(indexName);
+    if (desc.dimension !== 768) {
+      console.log(
+        `Index dimension mismatch (found ${desc.dimension}, expected 768). Recreating index...`
+      );
+      await pc.deleteIndex(indexName);
+      
+      // Wait for deletion to propagate
+      let deleted = false;
+      while (!deleted) {
+        try {
+          await pc.describeIndex(indexName);
+          await new Promise((res) => setTimeout(res, 2000));
+        } catch (e) {
+          deleted = true;
+        }
+      }
+    } else {
+      console.log(`Pinecone index ${indexName} exists and is ready`);
+      index = pc.index(indexName);
+      indexInitialized = true;
+      return;
     }
-    console.log(`Pinecone index ${PINECONE_INDEX_NAME} ready`);
-  } else {
-    console.log(`Pinecone index ${PINECONE_INDEX_NAME} exists`);
   }
 
-  index = pc.index(PINECONE_INDEX_NAME);
+  console.log(`Creating Pinecone index: ${indexName}`);
+
+  await pc.createIndex({
+    name: indexName,
+    dimension: 768, // text-embedding-004 outputs 768 dimensions
+    metric: "cosine",
+    spec: {
+      serverless: {
+        cloud: "aws",
+        region: "us-east-1",
+      },
+    },
+  });
+
+  let ready = false;
+  while (!ready) {
+    const desc = await pc.describeIndex(indexName);
+    if (desc.status?.ready) ready = true;
+    else await new Promise((res) => setTimeout(res, 5000));
+  }
+  console.log(`Pinecone index ${indexName} ready`);
+
+  index = pc.index(indexName);
   indexInitialized = true;
 }
 
@@ -85,15 +109,22 @@ async function semanticSearch(query, { category, subcategory, topK = 5 } = {}) {
 
   const embedding = await getEmbedding(query);
 
-  const res = await index.query({
+  const filter = {
+    ...(category && { category }),
+    ...(subcategory && { subcategory }),
+  };
+
+  const queryOptions = {
     vector: embedding,
     topK,
     includeMetadata: true,
-    filter: {
-      ...(category && { category }),
-      ...(subcategory && { subcategory }),
-    },
-  });
+  };
+
+  if (Object.keys(filter).length > 0) {
+    queryOptions.filter = filter;
+  }
+
+  const res = await index.query(queryOptions);
 
   return (res.matches || []).map((m) => ({
     id: m.id,
@@ -105,4 +136,11 @@ async function semanticSearch(query, { category, subcategory, topK = 5 } = {}) {
 // Init index on load
 ensureIndex().catch(console.error);
 
-module.exports = { indexProduct, semanticSearch, ensureIndex };
+// Delete product vector
+async function deleteProductVector(productId) {
+  if (!indexInitialized) await ensureIndex();
+  await index.deleteOne(productId);
+  return { success: true };
+}
+
+module.exports = { indexProduct, semanticSearch, ensureIndex, deleteProductVector };

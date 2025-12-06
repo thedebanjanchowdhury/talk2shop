@@ -10,7 +10,9 @@ const {
 } = require("../validators/productSchemas");
 const multer = require("multer");
 const cloudinary = require("../config/cloudinary");
-const { indexProduct, semanticSearch } = require("../services/searchService");
+const { indexProduct, semanticSearch, deleteProductVector } = require("../services/searchService");
+
+
 
 // Multer memory storage (no disk)
 const storage = multer.memoryStorage();
@@ -33,6 +35,16 @@ const uploadToCloudinary = async (fileBuffer, filename) => {
     stream.end(fileBuffer);
   });
 };
+
+// --- GET distinct categories ---
+router.get("/categories", async (req, res) => {
+  try {
+    const categories = await product.distinct("category");
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 // --- GET product by ID ---
 router.get("/:id", async (req, res) => {
@@ -190,7 +202,7 @@ router.delete("/:id", auth, adminOnly, async (req, res) => {
       }
     }
 
-    await index.deleteOne(p._id.toString());
+    await deleteProductVector(p._id.toString());
     res.json({ message: "Product deleted" });
   } catch (err) {
     console.error(err);

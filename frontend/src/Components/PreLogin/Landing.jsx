@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 // Correct path assuming Landing.jsx and SignInDialog.jsx are siblings in 'src/Components'
 import SignInDialog from '../Essentaial/SignInDialog ';
-import CategorySlider from '../AfterLogIn/CategorySlider';
+import Design from '../Essentaial/Design.jsx';
 
-export default function Landing() {
+export default function Landing({ handleLogin }) {
     // State to control the visibility and initial tab of the Auth dialog
     const [showAuthDialog, setShowAuthDialog] = useState(null);
     
     // Handler for successful authentication (called by SignInDialog)
-    const handleAuthSuccess = () => {
+    const handleAuthSuccess = (userData) => {
         setShowAuthDialog(null);
         console.log("Authentication successful! Landing page should now redirect/hide.");
+        handleLogin(userData);
     }
     
     // Opens the SignInDialog with the 'signin' tab active
@@ -74,8 +75,8 @@ export default function Landing() {
             {/* CATEGORY SLIDER SECTION */}
             {/* FIX 3: Removed invalid <li> tag. */}
             {/* This div centers the CategorySlider horizontally. */}
-            <div className='w-full bg-red-50 flex justify-center mt-10 p-4'>
-                <CategorySlider />
+            <div className='w-full flex justify-center mt-10 '>
+                <Design />
             </div>
 
             {/* Conditional Rendering of the Sign In Dialog */}

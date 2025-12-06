@@ -11,7 +11,7 @@ const register = z.object({
       .string()
       .min(6, "Password must be at least 6 characters")
       .max(50, "Password must be at most 50 characters"),
-    address: z.string(),
+    address: z.string().optional(),
     isAdmin: z.boolean().optional().default(false),
   }),
 });

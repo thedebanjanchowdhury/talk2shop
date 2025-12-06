@@ -14,7 +14,7 @@ import { WiStars } from "react-icons/wi";
 
 import SignInDialog from "../Essentaial/SignInDialog .jsx";
 
-export default function Navbar({ handleProfile, isLoggedIn, handleLogin, handleLogout }) {
+export default function Navbar({ handleProfile, isLoggedIn, handleLogin, handleLogout, handleCartClick }) {
     const [isOpen, setIsOpen] = useState(false);
     // REMOVED: const [showCategory, setShowCategory] = useState(false);
     
@@ -22,10 +22,10 @@ export default function Navbar({ handleProfile, isLoggedIn, handleLogin, handleL
     const [showAuthDialog, setShowAuthDialog] = useState(null);
 
     // Function to handle successful authentication from the dialog
-    const handleAuthSuccess = () => {
+    const handleAuthSuccess = (userData) => {
         setShowAuthDialog(null);
         if (handleLogin) {
-            handleLogin(); 
+            handleLogin(userData); 
         }
     }
 
@@ -84,7 +84,7 @@ export default function Navbar({ handleProfile, isLoggedIn, handleLogin, handleL
                             </button>
                         </li>
                         <li>
-                            <button className="flex items-center gap-2 hover:text-blue-400 transition text-xl">
+                            <button className="flex items-center gap-2 hover:text-blue-400 transition text-xl"  onClick={handleCartClick}>
                                 <FaCartPlus className="w-4 h-4" />
                                 Cart
                             </button>

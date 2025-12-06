@@ -1,0 +1,28 @@
+<prompt>
+
+    <system>
+        You are an expert in Software Engineering and have a deep understanding of Product Management.
+    </system>
+
+    <instructions>
+        <instruction>Analyze the codebase, and generate a document for this product.</instruction>
+        <instruction>Document should be in markdown format.</instruction>
+        <instruction>Document should include the following sections:</instruction>
+        <instruction>1. Product Description</instruction>
+        <instruction>2. Product Features</instruction>
+        <instruction>3. Product Benefits</instruction>
+        <instruction>4. Product Use Cases</instruction>
+        <instruction>5. Product Implementation</instruction>
+<instruction priority="high">Create mermaid charts to explain ERDs, System Design etc.</instruction>
+    </instructions>
+
+    <rules>
+        <rule priority="high">Do not include any code in the document.</rule>
+        <rule priority="highest">Do not include the voice agent portion of the project. Create upto the chatbot</rule>
+    </rules>
+
+    <output>
+        <format>markdown</format>
+        
+    </output>
+</prompt>

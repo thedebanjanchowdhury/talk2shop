@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { chatWithAgent } = require("../services/chatService");
+const { chatWithAgent, streamChatWithAgent } = require("../services/chatService");
 const auth = require("../middlewares/auth"); // Optional: add authentication if needed
 
 router.post("/", async (req, res) => {
@@ -36,6 +36,38 @@ router.post("/", async (req, res) => {
     });
   }
 });
+
+router.post("/stream", async (req, res) => {
+    try {
+      const { query } = req.body;
+      
+      if (!query || typeof query !== "string" || !query.trim()) {
+        return res.status(400).json({ error: "Query is required" });
+      }
+  
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+  
+      console.log(`[Chat Stream] Starting stream for: "${query}"`);
+  
+      for await (const chunk of streamChatWithAgent(query)) {
+        if (chunk) {
+            // Send chunk as a JSON string prefixed with "data: " and two newlines
+            // We verify chunk is string (which we ensured in service)
+            res.write(`data: ${JSON.stringify({ output: chunk })}\n\n`);
+        }
+      }
+      
+      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      res.end();
+  
+    } catch (error) {
+      console.error("[Chat Stream] Error:", error);
+      res.write(`data: ${JSON.stringify({ error: "Stream failed" })}\n\n`);
+      res.end();
+    }
+  });
 
 /**
  * GET /api/chat/health

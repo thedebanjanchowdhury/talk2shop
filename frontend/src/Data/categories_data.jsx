@@ -12,7 +12,7 @@ const categories = [
   { id: 7, name: "GPUs", icon: <FaFan /> },
   { id: 8, name: "CPUs", icon: <FaMicrochip /> },
   { id: 9, name: "Storage (RAM, ROM)", icon: <FaHdd /> },
-  { id: 10, name: "Power Supplies", icon: <FaBolt /> },
+ // { id: 10, name: "Power Supplies", icon: <FaBolt /> },
 ];
 
 export default categories;

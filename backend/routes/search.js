@@ -36,9 +36,13 @@ router.get("/", async (req, res) => {
       );
       return res.json(ordered.slice(skip, skip + limit));
     }
-    return res.json([]); // no matches
+    
+    // If semantic search returns no results, throw error to trigger fallback
+    throw new Error("No semantic matches found, falling back to text search");
   } catch (error) {
-    console.log("Error with semantic search: ", error);
+    if (error.message !== "No semantic matches found, falling back to text search") {
+        console.log("Error with semantic search: ", error);
+    }
 
     // fallback to MongoDB text search
     const results = await Product.find(

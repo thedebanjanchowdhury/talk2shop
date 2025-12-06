@@ -1,0 +1,111 @@
+import { FaKeyboard, FaMouse, FaDesktop, FaVolumeUp, FaHeadphones, FaServer, FaMicrochip, FaPlug, FaHdd } from "react-icons/fa";
+
+export const products = [
+  // ⌨️ Category 1 - Keyboards
+  { cat_id: 1, p_id: 1, name: "Corsair K70 RGB MK.2", price: "$149.99", icon: <FaKeyboard /> },
+  { cat_id: 1, p_id: 2, name: "Razer BlackWidow V3", price: "$129.99", icon: <FaKeyboard /> },
+  { cat_id: 1, p_id: 3, name: "Logitech G915 TKL", price: "$199.99", icon: <FaKeyboard /> },
+  { cat_id: 1, p_id: 4, name: "SteelSeries Apex Pro", price: "$179.99", icon: <FaKeyboard /> },
+  { cat_id: 1, p_id: 5, name: "HyperX Alloy FPS Pro", price: "$89.99", icon: <FaKeyboard /> },
+  { cat_id: 1, p_id: 6, name: "Cooler Master CK552", price: "$79.99", icon: <FaKeyboard /> },
+  { cat_id: 1, p_id: 7, name: "Keychron K8 Wireless", price: "$99.99", icon: <FaKeyboard /> },
+  { cat_id: 1, p_id: 8, name: "Ducky One 2 Mini", price: "$109.99", icon: <FaKeyboard /> },
+  { cat_id: 1, p_id: 9, name: "Logitech G Pro X", price: "$149.99", icon: <FaKeyboard /> },
+  { cat_id: 1, p_id: 10, name: "Razer Huntsman Mini", price: "$119.99", icon: <FaKeyboard /> },
+
+  // 🖱️ Category 2 - Mice
+  { cat_id: 2, p_id: 11, name: "Logitech G502 Hero", price: "$79.99", icon: <FaMouse /> },
+  { cat_id: 2, p_id: 12, name: "Razer DeathAdder V2", price: "$69.99", icon: <FaMouse /> },
+  { cat_id: 2, p_id: 13, name: "SteelSeries Rival 600", price: "$89.99", icon: <FaMouse /> },
+  { cat_id: 2, p_id: 14, name: "Glorious Model O", price: "$59.99", icon: <FaMouse /> },
+  { cat_id: 2, p_id: 15, name: "Corsair Dark Core RGB", price: "$99.99", icon: <FaMouse /> },
+  { cat_id: 2, p_id: 16, name: "Logitech MX Master 3", price: "$99.99", icon: <FaMouse /> },
+  { cat_id: 2, p_id: 17, name: "Razer Basilisk Ultimate", price: "$149.99", icon: <FaMouse /> },
+  { cat_id: 2, p_id: 18, name: "Cooler Master MM720", price: "$49.99", icon: <FaMouse /> },
+  { cat_id: 2, p_id: 19, name: "ASUS ROG Gladius III", price: "$89.99", icon: <FaMouse /> },
+  { cat_id: 2, p_id: 20, name: "SteelSeries Aerox 3 Wireless", price: "$99.99", icon: <FaMouse /> },
+
+  // 🖥️ Category 3 - Monitors
+  { cat_id: 3, p_id: 21, name: "ASUS ROG Swift PG279Q", price: "$699.99", icon: <FaDesktop /> },
+  { cat_id: 3, p_id: 22, name: "Dell Ultrasharp U2720Q", price: "$549.99", icon: <FaDesktop /> },
+  { cat_id: 3, p_id: 23, name: "LG UltraGear 27GN950", price: "$799.99", icon: <FaDesktop /> },
+  { cat_id: 3, p_id: 24, name: "Samsung Odyssey G9", price: "$1,299.99", icon: <FaDesktop /> },
+  { cat_id: 3, p_id: 25, name: "Acer Predator XB273K", price: "$899.99", icon: <FaDesktop /> },
+  { cat_id: 3, p_id: 26, name: "Gigabyte M27Q", price: "$329.99", icon: <FaDesktop /> },
+  { cat_id: 3, p_id: 27, name: "MSI Optix MAG274QRF", price: "$449.99", icon: <FaDesktop /> },
+  { cat_id: 3, p_id: 28, name: "ASUS TUF VG259QM", price: "$289.99", icon: <FaDesktop /> },
+  { cat_id: 3, p_id: 29, name: "Dell S2721DGF", price: "$449.99", icon: <FaDesktop /> },
+  { cat_id: 3, p_id: 30, name: "AOC CQ32G1", price: "$379.99", icon: <FaDesktop /> },
+
+  // 🔊 Category 4 - Speakers
+  { cat_id: 4, p_id: 31, name: "Logitech Z407", price: "$119.99", icon: <FaVolumeUp /> },
+  { cat_id: 4, p_id: 32, name: "Creative Pebble Plus", price: "$59.99", icon: <FaVolumeUp /> },
+  { cat_id: 4, p_id: 33, name: "Razer Nommo Chroma", price: "$149.99", icon: <FaVolumeUp /> },
+  { cat_id: 4, p_id: 34, name: "Edifier R1700BT", price: "$199.99", icon: <FaVolumeUp /> },
+  { cat_id: 4, p_id: 35, name: "Bose Companion 2 Series III", price: "$129.99", icon: <FaVolumeUp /> },
+  { cat_id: 4, p_id: 36, name: "Audioengine A2+", price: "$269.99", icon: <FaVolumeUp /> },
+  { cat_id: 4, p_id: 37, name: "Klipsch R-51PM", price: "$349.99", icon: <FaVolumeUp /> },
+  { cat_id: 4, p_id: 38, name: "JBL Pebbles", price: "$89.99", icon: <FaVolumeUp /> },
+  { cat_id: 4, p_id: 39, name: "Sony SRS-XB23", price: "$99.99", icon: <FaVolumeUp /> },
+  { cat_id: 4, p_id: 40, name: "Marshall Stanmore II", price: "$379.99", icon: <FaVolumeUp /> },
+
+  // 🎧 Category 5 - Headphones
+  { cat_id: 5, p_id: 41, name: "Sony WH-1000XM5", price: "$399.99", icon: <FaHeadphones /> },
+  { cat_id: 5, p_id: 42, name: "Bose QuietComfort 45", price: "$349.99", icon: <FaHeadphones /> },
+  { cat_id: 5, p_id: 43, name: "Razer BlackShark V2", price: "$129.99", icon: <FaHeadphones /> },
+  { cat_id: 5, p_id: 44, name: "SteelSeries Arctis Nova 7", price: "$179.99", icon: <FaHeadphones /> },
+  { cat_id: 5, p_id: 45, name: "HyperX Cloud Alpha", price: "$99.99", icon: <FaHeadphones /> },
+  { cat_id: 5, p_id: 46, name: "Logitech G Pro X", price: "$129.99", icon: <FaHeadphones /> },
+  { cat_id: 5, p_id: 47, name: "Sennheiser HD 660S", price: "$499.99", icon: <FaHeadphones /> },
+  { cat_id: 5, p_id: 48, name: "Audio-Technica ATH-M50x", price: "$169.99", icon: <FaHeadphones /> },
+  { cat_id: 5, p_id: 49, name: "Apple AirPods Max", price: "$549.99", icon: <FaHeadphones /> },
+  { cat_id: 5, p_id: 50, name: "JBL Quantum 800", price: "$199.99", icon: <FaHeadphones /> },
+
+  // 🖥️ Category 6 - Cabinets
+  { cat_id: 6, p_id: 51, name: "NZXT H510", price: "$89.99", icon: <FaServer /> },
+  { cat_id: 6, p_id: 52, name: "Corsair 4000D Airflow", price: "$104.99", icon: <FaServer /> },
+  { cat_id: 6, p_id: 53, name: "Lian Li PC-O11 Dynamic", price: "$139.99", icon: <FaServer /> },
+  { cat_id: 6, p_id: 54, name: "Cooler Master NR600", price: "$79.99", icon: <FaServer /> },
+  { cat_id: 6, p_id: 55, name: "Phanteks Eclipse P400A", price: "$89.99", icon: <FaServer /> },
+  { cat_id: 6, p_id: 56, name: "Thermaltake View 71", price: "$189.99", icon: <FaServer /> },
+  { cat_id: 6, p_id: 57, name: "Cooler Master H500", price: "$149.99", icon: <FaServer /> },
+  { cat_id: 6, p_id: 58, name: "NZXT H7 Flow", price: "$129.99", icon: <FaServer /> },
+  { cat_id: 6, p_id: 59, name: "Antec DF700 Flux", price: "$119.99", icon: <FaServer /> },
+  { cat_id: 6, p_id: 60, name: "Fractal Design Meshify C", price: "$109.99", icon: <FaServer /> },
+
+  // ⚙️ Category 7 - CPUs
+  { cat_id: 7, p_id: 61, name: "Intel Core i9-13900K", price: "$589.99", icon: <FaMicrochip /> },
+  { cat_id: 7, p_id: 62, name: "AMD Ryzen 9 7950X", price: "$699.99", icon: <FaMicrochip /> },
+  { cat_id: 7, p_id: 63, name: "Intel Core i7-13700K", price: "$419.99", icon: <FaMicrochip /> },
+  { cat_id: 7, p_id: 64, name: "AMD Ryzen 7 7800X3D", price: "$499.99", icon: <FaMicrochip /> },
+  { cat_id: 7, p_id: 65, name: "Intel Core i5-13600K", price: "$329.99", icon: <FaMicrochip /> },
+  { cat_id: 7, p_id: 66, name: "AMD Ryzen 5 7600", price: "$259.99", icon: <FaMicrochip /> },
+  { cat_id: 7, p_id: 67, name: "Intel Core i3-13100", price: "$139.99", icon: <FaMicrochip /> },
+  { cat_id: 7, p_id: 68, name: "AMD Ryzen 9 5900X", price: "$399.99", icon: <FaMicrochip /> },
+  { cat_id: 7, p_id: 69, name: "Intel Core i9-12900K", price: "$499.99", icon: <FaMicrochip /> },
+  { cat_id: 7, p_id: 70, name: "AMD Ryzen 7 5800X", price: "$359.99", icon: <FaMicrochip /> },
+
+  // 🔌 Category 8 - Power Supplies
+  { cat_id: 8, p_id: 71, name: "Corsair RM850x", price: "$149.99", icon: <FaPlug /> },
+  { cat_id: 8, p_id: 72, name: "EVGA SuperNOVA 750 G5", price: "$129.99", icon: <FaPlug /> },
+  { cat_id: 8, p_id: 73, name: "Seasonic Focus GX-850", price: "$139.99", icon: <FaPlug /> },
+  { cat_id: 8, p_id: 74, name: "Cooler Master MWE Gold 750", price: "$119.99", icon: <FaPlug /> },
+  { cat_id: 8, p_id: 75, name: "Thermaltake Toughpower GF1", price: "$134.99", icon: <FaPlug /> },
+  { cat_id: 8, p_id: 76, name: "Corsair HX1000", price: "$229.99", icon: <FaPlug /> },
+  { cat_id: 8, p_id: 77, name: "EVGA 600 BR", price: "$64.99", icon: <FaPlug /> },
+  { cat_id: 8, p_id: 78, name: "Seasonic Prime TX-850", price: "$239.99", icon: <FaPlug /> },
+  { cat_id: 8, p_id: 79, name: "Cooler Master XG Plus Platinum", price: "$199.99", icon: <FaPlug /> },
+  { cat_id: 8, p_id: 80, name: "Antec Earthwatts 750W", price: "$129.99", icon: <FaPlug /> },
+
+  // 💾 Category 9 - Storage
+  { cat_id: 9, p_id: 81, name: "Samsung 980 PRO 1TB NVMe SSD", price: "$119.99", icon: <FaHdd /> },
+  { cat_id: 9, p_id: 82, name: "WD Black SN850X 1TB NVMe SSD", price: "$129.99", icon: <FaHdd /> },
+  { cat_id: 9, p_id: 83, name: "Crucial MX500 1TB SATA SSD", price: "$69.99", icon: <FaHdd /> },
+  { cat_id: 9, p_id: 84, name: "Kingston KC3000 2TB NVMe SSD", price: "$179.99", icon: <FaHdd /> },
+  { cat_id: 9, p_id: 85, name: "Seagate Barracuda 2TB HDD", price: "$59.99", icon: <FaHdd /> },
+  { cat_id: 9, p_id: 86, name: "WD Blue SN570 1TB NVMe SSD", price: "$59.99", icon: <FaHdd /> },
+  { cat_id: 9, p_id: 87, name: "Samsung 870 EVO 2TB SATA SSD", price: "$139.99", icon: <FaHdd /> },
+  { cat_id: 9, p_id: 88, name: "Crucial P3 Plus 1TB NVMe SSD", price: "$79.99", icon: <FaHdd /> },
+  { cat_id: 9, p_id: 89, name: "Seagate FireCuda 530 1TB NVMe SSD", price: "$139.99", icon: <FaHdd /> },
+  { cat_id: 9, p_id: 90, name: "WD Elements 4TB External HDD", price: "$99.99", icon: <FaHdd /> },
+];
