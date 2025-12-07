@@ -5,11 +5,14 @@ const User = require("../models/User");
 const { register, login } = require("../validators/authSchemas");
 const validate = require("../middlewares/validate");
 
+const connectDB = require("../config/db");
+
 // register user
 router.post("/register", validate(register), async (req, res) => {
   const { name, email, password, address, isAdmin } = req.validated.body;
 
   try {
+    await connectDB(process.env.MONGODB_URI);
     let existing = await User.findOne({ email });
     if (existing)
       return res.status(400).json({ message: "Email already exists" });
@@ -39,6 +42,7 @@ router.post("/register", validate(register), async (req, res) => {
 router.post("/login", validate(login), async (req, res) => {
   const { email, password } = req.validated.body;
   try {
+    await connectDB(process.env.MONGODB_URI);
     const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ message: "Invalid Credentials" });
     if (!(await user.comparePassword(password)))
