@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import API_BASE_URL from "../../config.js";
+import BACKEND_URL from "../../config.js";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 
@@ -12,7 +12,7 @@ export default function ProductView({ categoryId, onSelectProduct }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/products`);
+        const response = await fetch(`${BACKEND_URL}/api/products`);
         const data = await response.json();
         setProducts(data);
       } catch (error) {

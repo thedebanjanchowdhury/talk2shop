@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import API_BASE_URL from "../../config.js";
+import BACKEND_URL from "../../config.js";
 import { FaGoogle, FaGithub } from 'react-icons/fa'; // Import social icons
 
 export default function SignInDialog({ onClose, onSuccess, initialTab }) {
@@ -20,7 +20,7 @@ export default function SignInDialog({ onClose, onSuccess, initialTab }) {
         setMessage({ text: "", type: "" }); 
         
         try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+            const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export default function SignInDialog({ onClose, onSuccess, initialTab }) {
         
         if (firstName && lastName && email && password) {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+                const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import API_BASE_URL from "../../config.js";
+import BACKEND_URL from "../../config.js";
 import { Send, Mic, X, MessageCircle } from "lucide-react"; 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -28,7 +28,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/chat/stream`, {
+      const response = await fetch(`${BACKEND_URL}/api/chat/stream`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

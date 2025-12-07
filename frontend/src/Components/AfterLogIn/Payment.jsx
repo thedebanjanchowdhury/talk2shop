@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import API_BASE_URL from "../../config.js";
+import BACKEND_URL from "../../config.js";
 import {
     Truck,
     DollarSign,
@@ -149,7 +149,7 @@ const Payment = ({ onClose }) => {
                 const token = localStorage.getItem('token');
                 if (!token) return;
 
-                const response = await fetch(`${API_BASE_URL}/api/cart`, {
+                const response = await fetch(`${BACKEND_URL}/api/cart`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await response.json();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import API_BASE_URL from "../../config.js";
+import BACKEND_URL from "../../config.js";
 import { FaEdit, FaTrash, FaPlus, FaTimes } from 'react-icons/fa';
 
 export default function ProductManagement() {
@@ -24,7 +24,7 @@ export default function ProductManagement() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/products`);
+      const response = await fetch(`${BACKEND_URL}/api/products`);
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }
@@ -96,8 +96,8 @@ export default function ProductManagement() {
     try {
       const token = localStorage.getItem('token');
       const url = editingProduct 
-        ? `${API_BASE_URL}/api/products/${editingProduct._id}`
-        : `${API_BASE_URL}/api/products`;
+        ? `${BACKEND_URL}/api/products/${editingProduct._id}`
+        : `${BACKEND_URL}/api/products`;
       
       const method = editingProduct ? 'PUT' : 'POST';
 
@@ -129,7 +129,7 @@ export default function ProductManagement() {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/api/products/${id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/products/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

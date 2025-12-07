@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import API_BASE_URL from "../../config.js";
+import BACKEND_URL from "../../config.js";
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 
@@ -15,7 +15,7 @@ export default function UserManagement() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/api/users`, {
+      const response = await fetch(`${BACKEND_URL}/api/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
@@ -39,7 +39,7 @@ export default function UserManagement() {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/api/users/${id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -71,7 +71,7 @@ export default function UserManagement() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/api/users/${editingUser._id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/${editingUser._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

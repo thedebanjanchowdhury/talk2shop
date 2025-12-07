@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import API_BASE_URL from "../../config.js";
+import BACKEND_URL from "../../config.js";
 import { Truck, DollarSign, Package as PackageIcon, X } from 'lucide-react';
 
 // Reusable input component
@@ -123,7 +123,7 @@ export default function OrderSummary({ onClose, buyNowProduct }) {
 
             try {
                 // 1. Fetch User Profile (in parallel with cart if needed, but sequential here for simplicity)
-                const userRes = await fetch(`${API_BASE_URL}/api/users/me`, {
+                const userRes = await fetch(`${BACKEND_URL}/api/users/me`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (userRes.ok) {
@@ -145,7 +145,7 @@ export default function OrderSummary({ onClose, buyNowProduct }) {
                         id: buyNowProduct._id
                     }]);
                 } else {
-                    const cartRes = await fetch(`${API_BASE_URL}/api/cart`, {
+                    const cartRes = await fetch(`${BACKEND_URL}/api/cart`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     const cartData = await cartRes.json();
@@ -208,7 +208,7 @@ export default function OrderSummary({ onClose, buyNowProduct }) {
                 totalAmount: totals.total
             };
 
-            const response = await fetch(`${API_BASE_URL}/api/orders`, {
+            const response = await fetch(`${BACKEND_URL}/api/orders`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

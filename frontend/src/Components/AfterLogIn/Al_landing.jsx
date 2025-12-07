@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import API_BASE_URL from "../../config.js";
+import BACKEND_URL from "../../config.js";
 import ProductView from "./productView.jsx";
 import CategorySlider from "./CategorySlider";
 import Design from "../Essentaial/Design.jsx";
@@ -24,7 +24,7 @@ export default function Al_landing({ handleProfile, handleCheckout }) {
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/cart/add`, {
+      const response = await fetch(`${BACKEND_URL}/api/cart/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
