@@ -14,10 +14,15 @@ async function connectDB(uri) {
   }
 
   if (!cached.promise) {
+    // Verify URI is loaded (print masked version)
+    if (!uri) {
+        console.error("CRITICAL: MONGODB_URI is undefined!");
+        throw new Error("MONGODB_URI is undefined");
+    }
+    console.log(`Connecting to MongoDB... (URI starts with: ${uri.substring(0, 15)}...)`);
+
     const opts = {
-      bufferCommands: true, 
-      serverSelectionTimeoutMS: 15000, // Wait up to 15s for server to become available
-      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      bufferCommands: false, // Turn off buffering to fail fast
     };
 
     console.log("Creating new MongoDB connection...");
