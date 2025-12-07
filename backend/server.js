@@ -33,12 +33,26 @@ app.get("/", (req, res) => res.send("API Running. Use /api/ endpoints."));
 const PORT = process.env.PORT || 5000;
 console.log("MONGODB_URI Defined:", !!process.env.MONGODB_URI);
 
-// Connect to DB if URI is present
+// Connect to DB if URI is present (Async wrapper for Vercel)
+let dbConnection = null;
 if (process.env.MONGODB_URI) {
-    connectDB(process.env.MONGODB_URI).catch(err => console.error("MongoDB Connection Error:", err));
-} else {
-    console.warn("MONGODB_URI is not defined in environment variables.");
+    dbConnection = connectDB(process.env.MONGODB_URI).catch(err => console.error("Hash Connection Error", err));
 }
+
+// Middleware to wait for DB
+app.use(async (req, res, next) => {
+    if (dbConnection) {
+        try {
+            await dbConnection;
+            next();
+        } catch (err) {
+            console.error("DB Wait Error:", err);
+            res.status(500).json({ message: "Database connection failed" });
+        }
+    } else {
+        next();
+    }
+});
 
 // Start server only if running directly
 if (require.main === module) {
