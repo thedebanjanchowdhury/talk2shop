@@ -80,8 +80,10 @@ export default function Al_landing({ handleProfile, handleCheckout }) {
         onBuyNow={handleCheckout}
       />
       
-      <div className="fixed bottom-5 right-5 z-50 flex items-end gap-4">
-        <elevenlabs-convai agent-id="agent_0401kaqpvyyzeegbyy27mrv48m21"></elevenlabs-convai>
+      <div className="fixed bottom-5 right-5 z-50 flex items-end gap-12">
+        <div className="mb-2"> {/* Wrapper to Lift/Control ElevenLabs spacing if needed */}
+            <elevenlabs-convai agent-id="agent_0401kaqpvyyzeegbyy27mrv48m21"></elevenlabs-convai>
+        </div>
         <Chatbot />
       </div>
     </div>
