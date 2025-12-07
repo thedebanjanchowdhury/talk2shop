@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import API_BASE_URL from "../../config.js";
+import API_BASE_URL from "<div styleName={} />
+<div styleName={} />
+<config></config>.js";
 import { ShoppingCart } from "lucide-react";
 
 export default function ProductCard({ productId, onAddToCart, onBuyNow }) {
