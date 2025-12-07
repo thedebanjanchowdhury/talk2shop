@@ -5,8 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 
-const Chatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Chatbot = ({ isOpen, setIsOpen }) => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
     { role: "bot", text: "👋 Hi! I’m your AI assistant. How can I help you today?" },

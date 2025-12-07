@@ -49,6 +49,8 @@ export default function Al_landing({ handleProfile, handleCheckout }) {
     }
   };
 
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed@beta";
@@ -80,12 +82,21 @@ export default function Al_landing({ handleProfile, handleCheckout }) {
         onBuyNow={handleCheckout}
       />
       
-      <div className="fixed bottom-5 right-5 z-50 flex items-end gap-12">
-        <div className="mb-2"> {/* Wrapper to Lift/Control ElevenLabs spacing if needed */}
-            <elevenlabs-convai agent-id="agent_0401kaqpvyyzeegbyy27mrv48m21"></elevenlabs-convai>
-        </div>
-        <Chatbot />
+      {/* Dynamic Layout Container */}
+      {/* 1. Chatbot Button/Window stays fixed right-5 */}
+      <div className="fixed bottom-5 right-5 z-50">
+           <Chatbot isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
       </div>
+
+      {/* 2. ElevenLabs Widget moves based on Chatbot state */}
+      <div 
+        className={`fixed bottom-5 z-50 transition-all duration-300 ease-in-out ${
+            isChatOpen ? "right-[620px]" : "right-24" // Slides left when chat opens
+        }`}
+      >
+        <elevenlabs-convai agent-id="agent_0401kaqpvyyzeegbyy27mrv48m21"></elevenlabs-convai>
+      </div>
+
     </div>
   );
 }
