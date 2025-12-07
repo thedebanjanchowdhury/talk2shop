@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BACKEND_URL from "../../config.js";
 import ProductView from "./productView.jsx";
 import CategorySlider from "./CategorySlider";
@@ -49,6 +49,18 @@ export default function Al_landing({ handleProfile, handleCheckout }) {
     }
   };
 
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed@beta";
+    script.async = true;
+    script.type = "text/javascript";
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    }
+  }, []);
+
   return (
     <div>
       <Design />
@@ -67,6 +79,8 @@ export default function Al_landing({ handleProfile, handleCheckout }) {
         onAddToCart={handleAddToCart} 
         onBuyNow={handleCheckout}
       />
+      
+      <elevenlabs-convai agent-id="agent_0401kaqpvyyzeegbyy27mrv48m21"></elevenlabs-convai>
       <Chatbot />
     </div>
   );
