@@ -86,10 +86,21 @@ router.get("/semantic", async (req, res) => {
       topK: Number(topK) || 5,
     });
 
-    res.json({ query: q, count: results.length, results });
+    const ids = results.map((r) => r.id);
+    const products = await product.find({ _id: { $in: ids } });
+
+    // Merge mongo data with vector scores
+    const finalResults = results
+      .map((r) => {
+        const p = products.find((prod) => prod._id.toString() === r.id);
+        return p ? { ...p.toObject(), score: r.score } : null;
+      })
+      .filter((item) => item !== null);
+
+    res.json({ query: q, count: finalResults.length, results: finalResults });
   } catch (err) {
     console.error("Semantic Search Error:", err);
-    res.status(500).json({ message: "Search failed" });
+    res.status(500).json({ message: `Search failed: ${err.message}` });
   }
 });
 
