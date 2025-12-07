@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import API_BASE_URL from "../../config.js";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import Cart from "../AfterLogIn/Cart.jsx";
@@ -21,7 +22,7 @@ export default function Profile({ onClose, handleCheckout }) {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch('/api/users/me', {
+      const response = await fetch(`${API_BASE_URL}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -55,7 +56,7 @@ export default function Profile({ onClose, handleCheckout }) {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const response = await fetch('/api/orders/my-orders', {
+        const response = await fetch(`${API_BASE_URL}/api/orders/my-orders`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -81,7 +82,7 @@ export default function Profile({ onClose, handleCheckout }) {
     e.preventDefault();
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('/api/users/me', {
+        const response = await fetch(`${API_BASE_URL}/api/users/me`, {
             method: 'PUT',
             headers: { 
                 'Content-Type': 'application/json',

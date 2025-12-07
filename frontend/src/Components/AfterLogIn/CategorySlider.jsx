@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import API_BASE_URL from "../../config.js";
 import { FaChevronLeft, FaChevronRight, FaKeyboard, FaMouse, FaVolumeUp, FaHeadphones, FaBox, FaMicrochip, FaHdd, FaBolt, FaFan, FaQuestion } from "react-icons/fa";
 import { MdMonitor } from "react-icons/md";
 
@@ -33,7 +34,7 @@ export default function CategorySlider({ onCategorySelect }) {
     // Fetch categories
     const fetchCategories = async () => {
       try {
-        const response = await fetch("/api/products/categories");
+        const response = await fetch(`${API_BASE_URL}/api/products/categories`);
         if (response.ok) {
           const data = await response.json();
           setCategories(data);

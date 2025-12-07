@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import API_BASE_URL from "../../config.js";
 import { ShoppingCart } from "lucide-react";
 
 export default function ProductCard({ productId, onAddToCart, onBuyNow }) {
@@ -8,7 +9,7 @@ export default function ProductCard({ productId, onAddToCart, onBuyNow }) {
   useEffect(() => {
     if (productId) {
       setLoading(true);
-      fetch(`/api/products/${productId}`)
+      fetch(`${API_BASE_URL}/api/products/${productId}`)
         .then((res) => res.json())
         .then((data) => {
           setProduct(data);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"; 
+import API_BASE_URL from "./config.js"; 
 import Navbar from "./Components/Essentaial/Navbar.jsx";
 import Landing from "./Components/PreLogin/Landing.jsx";
 import Footer from "./Components/Essentaial/Footer.jsx";
@@ -23,7 +24,7 @@ export default function App() {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await fetch('/api/users/me', {
+          const response = await fetch(`${API_BASE_URL}/api/users/me`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           

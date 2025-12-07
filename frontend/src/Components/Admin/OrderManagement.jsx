@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import API_BASE_URL from "../../config.js";
 import { FaTrash } from 'react-icons/fa';
 
 export default function OrderManagement() {
@@ -8,7 +9,7 @@ export default function OrderManagement() {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/orders/admin/all', {
+      const response = await fetch(`${API_BASE_URL}/api/orders/admin/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
@@ -29,7 +30,7 @@ export default function OrderManagement() {
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/orders/admin/${orderId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/api/orders/admin/${orderId}/status`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ export default function OrderManagement() {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/orders/admin/${orderId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/orders/admin/${orderId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });

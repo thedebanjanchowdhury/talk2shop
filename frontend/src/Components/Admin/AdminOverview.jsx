@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from "../../config.js";
 import { FaUsers, FaBoxOpen, FaShoppingCart, FaDollarSign, FaSync } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,9 +48,9 @@ export default function AdminOverview() {
       const headers = { Authorization: `Bearer ${token}` };
 
       const [usersRes, productsRes, ordersRes] = await Promise.all([
-        fetch('/api/users', { headers }),
-        fetch('/api/products'),
-        fetch('/api/orders/admin/all', { headers })
+        fetch(`${API_BASE_URL}/api/users`, { headers }),
+        fetch(`${API_BASE_URL}/api/products`),
+        fetch(`${API_BASE_URL}/api/orders/admin/all`, { headers })
       ]);
 
       const users = await usersRes.json();
