@@ -19,13 +19,13 @@ app.use(express.json({ limit: "5mb" }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes
-app.use("api/auth", authRoutes);
-app.use("api/users", userRoutes);
-app.use("api/products", productRoutes);
-app.use("api/cart", cartRoutes);
-app.use("api/search", searchRoutes);
-app.use("api/chat", chatRoutes);
-app.use("api/orders", require("./routes/orders"));
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/search", searchRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/orders", require("./routes/orders"));
 
 // Health check
 app.get("/", (req, res) => res.send("API Running. Use /api/ endpoints."));
