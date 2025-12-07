@@ -15,7 +15,10 @@ async function connectDB(uri) {
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false, // Return errors immediately if driver disconnects
+      bufferCommands: false, 
+      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      family: 4 // Use IPv4, skip trying IPv6
     };
 
     console.log("Creating new MongoDB connection...");
