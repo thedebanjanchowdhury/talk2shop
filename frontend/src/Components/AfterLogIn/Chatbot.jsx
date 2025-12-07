@@ -85,7 +85,7 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50">
+    <div className="flex flex-col items-end">
       {/* Chat Window */}
       {isOpen && (
         <div className="animate-slide-up bg-white shadow-2xl rounded-2xl w-[90vw] sm:w-[600px] h-[700px] flex flex-col border border-gray-200 mb-3">
