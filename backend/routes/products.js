@@ -111,6 +111,9 @@ router.get("/text-search", async (req, res) => {
 
     const queryLower = q.toLowerCase();
 
+    // Ensure DB connection for this request (serverless handling)
+    await require("../config/db")(process.env.MONGODB_URI);
+
     // 1. Fetch ALL products (lightweight, only necessary fields)
     // This avoids complex DB-side processing that might timeout
     const products = await product.find({}, "title description category subcategory price images stock");

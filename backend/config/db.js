@@ -15,8 +15,8 @@ async function connectDB(uri) {
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false, 
-      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+      bufferCommands: true, 
+      serverSelectionTimeoutMS: 15000, // Wait up to 15s for server to become available
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
     };
 
