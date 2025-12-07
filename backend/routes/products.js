@@ -12,18 +12,12 @@ const multer = require("multer");
 const cloudinary = require("../config/cloudinary");
 const { indexProduct, semanticSearch, deleteProductVector } = require("../services/searchService");
 
-
-
 // Multer memory storage (no disk)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Helper: upload buffer to Cloudinary
 const uploadToCloudinary = async (fileBuffer, filename) => {
-  const result = await cloudinary.uploader.upload_stream({
-    folder: "products",
-    public_id: filename,
-  });
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder: "products", public_id: filename },
@@ -36,39 +30,15 @@ const uploadToCloudinary = async (fileBuffer, filename) => {
   });
 };
 
+// ==========================================
+// 1. SPECIFIC GET ROUTES (Must come FIRST)
+// ==========================================
+
 // --- GET distinct categories ---
 router.get("/categories", async (req, res) => {
   try {
     const categories = await product.distinct("category");
     res.json(categories);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// --- GET product by ID ---
-router.get("/:id", async (req, res) => {
-  try {
-    const p = await product.findById(req.params.id);
-    if (!p) return res.status(404).json({ message: "Product not found" });
-    res.json(p);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// --- GET list of products ---
-router.get("/", async (req, res) => {
-  try {
-    const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.max(1, Number(req.query.limit) || 10);
-    const skip = (page - 1) * limit;
-    const products = await product
-      .find()
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
-    res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -103,53 +73,82 @@ router.get("/semantic", async (req, res) => {
     res.status(500).json({ message: `Search failed: ${err.message}` });
   }
 });
-// --- HYBRID Search (Robust Fallback) ---
+
+// --- HYBRID/TEXT Search (OPTIMISED) ---
 router.get("/text-search", async (req, res) => {
   try {
     const { q } = req.query;
     if (!q) return res.status(400).json({ message: "Query is required" });
 
-    const queryLower = q.toLowerCase();
-
     // Ensure DB connection for this request (serverless handling)
-    await require("../config/db")(process.env.MONGODB_URI);
+    try {
+        await require("../config/db")(process.env.MONGODB_URI);
+    } catch (dbErr) {
+        console.error("Route Connection Error:", dbErr);
+        // FIX: Stop execution if DB fails
+        return res.status(500).json({ message: "Database connection failed" });
+    }
 
-    // 1. Fetch ALL products (lightweight, only necessary fields)
-    // This avoids complex DB-side processing that might timeout
-    const products = await product.find({}, "title description category subcategory price images stock");
-    
-    // 2. Filter in Memory (Javascript)
-    // Reliable for datasets < 10k items on serverless
-    const results = products.filter(p => {
-        const title = p.title?.toLowerCase() || "";
-        const desc = p.description?.toLowerCase() || "";
-        const cat = p.category?.toLowerCase() || "";
-        const sub = p.subcategory?.toLowerCase() || "";
-        
-        return title.includes(queryLower) || 
-               desc.includes(queryLower) || 
-               cat.includes(queryLower) || 
-               sub.includes(queryLower);
-    });
+    // Create a flexible regex for case-insensitive partial matching
+    const searchRegex = new RegExp(q, 'i'); 
 
-    // 3. Sort by relevance (Exact title match gets priority)
-    results.sort((a, b) => {
-        const titleA = a.title?.toLowerCase() || "";
-        const titleB = b.title?.toLowerCase() || "";
-        const aHasTitle = titleA.includes(queryLower);
-        const bHasTitle = titleB.includes(queryLower);
-        
-        if (aHasTitle && !bHasTitle) return -1;
-        if (!aHasTitle && bHasTitle) return 1;
-        return 0;
-    });
+    // OPTIMISATION: Let MongoDB do the filtering, not Node.js RAM
+    const results = await product.find({
+        $or: [
+            { title: searchRegex },
+            { description: searchRegex },
+            { category: searchRegex },
+            { subcategory: searchRegex }
+        ]
+    })
+    .select("title description category subcategory price images stock") // Only needed fields
+    .limit(10); // Limit at database level
 
-    res.json(results.slice(0, 10)); // Return top 10
+    res.json(results);
+
   } catch (err) {
-    console.error("Hybrid Search Error:", err);
+    console.error("Text Search Error:", err);
     res.status(500).json({ message: `Search failed: ${err.message}` });
   }
 });
+
+// --- GET list of products (Pagination) ---
+router.get("/", async (req, res) => {
+  try {
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.max(1, Number(req.query.limit) || 10);
+    const skip = (page - 1) * limit;
+    const products = await product
+      .find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// ==========================================
+// 2. DYNAMIC / WILDCARD ROUTES (Must come LAST)
+// ==========================================
+
+// --- GET product by ID ---
+router.get("/:id", async (req, res) => {
+  try {
+    const p = await product.findById(req.params.id);
+    if (!p) return res.status(404).json({ message: "Product not found" });
+    res.json(p);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// ==========================================
+// 3. POST / PUT / DELETE ROUTES
+// ==========================================
+
+// --- CREATE Product ---
 router.post(
   "/",
   auth,
