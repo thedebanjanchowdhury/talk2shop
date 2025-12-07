@@ -103,8 +103,50 @@ router.get("/semantic", async (req, res) => {
     res.status(500).json({ message: `Search failed: ${err.message}` });
   }
 });
+// --- HYBRID Search (Robust Fallback) ---
+router.get("/text-search", async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) return res.status(400).json({ message: "Query is required" });
 
-// --- CREATE product ---
+    const queryLower = q.toLowerCase();
+
+    // 1. Fetch ALL products (lightweight, only necessary fields)
+    // This avoids complex DB-side processing that might timeout
+    const products = await product.find({}, "title description category subcategory price images stock");
+    
+    // 2. Filter in Memory (Javascript)
+    // Reliable for datasets < 10k items on serverless
+    const results = products.filter(p => {
+        const title = p.title?.toLowerCase() || "";
+        const desc = p.description?.toLowerCase() || "";
+        const cat = p.category?.toLowerCase() || "";
+        const sub = p.subcategory?.toLowerCase() || "";
+        
+        return title.includes(queryLower) || 
+               desc.includes(queryLower) || 
+               cat.includes(queryLower) || 
+               sub.includes(queryLower);
+    });
+
+    // 3. Sort by relevance (Exact title match gets priority)
+    results.sort((a, b) => {
+        const titleA = a.title?.toLowerCase() || "";
+        const titleB = b.title?.toLowerCase() || "";
+        const aHasTitle = titleA.includes(queryLower);
+        const bHasTitle = titleB.includes(queryLower);
+        
+        if (aHasTitle && !bHasTitle) return -1;
+        if (!aHasTitle && bHasTitle) return 1;
+        return 0;
+    });
+
+    res.json(results.slice(0, 10)); // Return top 10
+  } catch (err) {
+    console.error("Hybrid Search Error:", err);
+    res.status(500).json({ message: `Search failed: ${err.message}` });
+  }
+});
 router.post(
   "/",
   auth,
