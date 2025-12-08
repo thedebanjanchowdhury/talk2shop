@@ -24,7 +24,7 @@ export default function ProductManagement() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/products`);
+      const response = await fetch(`${BACKEND_URL}/api/products?limit=1000`);
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }
@@ -172,7 +172,7 @@ export default function ProductManagement() {
         </button>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto max-h-[70vh] overflow-y-auto custom-scrollbar">
         <table className="w-full text-left text-stone-800">
           <thead>
             <tr className="bg-gray-100 text-lg font-semibold text-gray-600">
