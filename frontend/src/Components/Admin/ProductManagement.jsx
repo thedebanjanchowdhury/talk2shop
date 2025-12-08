@@ -263,13 +263,22 @@ export default function ProductManagement() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                  <input
-                    type="text"
+                  <select
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
                     className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                  />
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Computers & Laptops">Computers & Laptops</option>
+                    <option value="Mobile Phones">Mobile Phones</option>
+                    <option value="Headphones">Headphones</option>
+                    <option value="Cameras">Cameras</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Smart Home">Smart Home</option>
+                    <option value="Gaming">Gaming</option>
+                    <option value="Networking">Networking</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Subcategory</label>
