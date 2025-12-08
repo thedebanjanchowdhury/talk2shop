@@ -274,6 +274,7 @@ export default function ProductManagement() {
                     <option value="Mobile Phones">Mobile Phones</option>
                     <option value="Headphones">Headphones</option>
                     <option value="Cameras">Cameras</option>
+                    <option value="Processors">Processors</option>
                     <option value="Accessories">Accessories</option>
                     <option value="Smart Home">Smart Home</option>
                     <option value="Gaming">Gaming</option>
