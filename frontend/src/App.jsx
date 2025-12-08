@@ -92,13 +92,15 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        handleProfile={handleProfileView}
-        handleLogin={handleLogin}
-        handleLogout={handleLogout}
-        handleCartClick={handleCartClick} 
-      />
+      {!isAdmin && (
+        <Navbar
+          isLoggedIn={isLoggedIn}
+          handleProfile={handleProfileView}
+          handleLogin={handleLogin}
+          handleLogout={handleLogout}
+          handleCartClick={handleCartClick} 
+        />
+      )}
 
       <main className="flex-grow">
         <div className="w-full mx-auto">

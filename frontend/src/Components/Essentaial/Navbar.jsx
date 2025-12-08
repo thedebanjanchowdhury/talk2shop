@@ -77,12 +77,7 @@ export default function Navbar({ handleProfile, isLoggedIn, handleLogin, handleL
                 {isLoggedIn ? (
                     <>
                         {/* Logged In: AI and Cart */}
-                        <li>
-                            <button className="flex items-center gap-2 hover:text-blue-400 transition text-xl">
-                                <WiStars className="w-8 h-8" />
-                                AI
-                            </button>
-                        </li>
+
                         <li>
                             <button className="flex items-center gap-2 hover:text-blue-400 transition text-xl"  onClick={handleCartClick}>
                                 <FaCartPlus className="w-4 h-4" />
@@ -149,14 +144,9 @@ export default function Navbar({ handleProfile, isLoggedIn, handleLogin, handleL
                     {/* Mobile: AI and Cart Links (Only visible if logged in) */}
                     {isLoggedIn && (
                         <>
+
                             <li>
-                                <button className="flex items-center gap-2 hover:text-blue-400 transition" onClick={() => setIsOpen(false)}>
-                                    <WiStars className="w-6 h-6" />
-                                    AI
-                                </button>
-                            </li>
-                            <li>
-                                <button className="flex items-center gap-2 hover:text-blue-400 transition" onClick={() => setIsOpen(false)}>
+                                <button className="flex items-center gap-2 hover:text-blue-400 transition" onClick={() => { setIsOpen(false); handleCartClick(); }}>
                                     <FaCartPlus className="w-6 h-6" />
                                     Cart
                                 </button>
