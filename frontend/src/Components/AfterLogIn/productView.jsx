@@ -12,7 +12,7 @@ export default function ProductView({ categoryId, onSelectProduct }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/api/products`);
+        const response = await fetch(`${BACKEND_URL}/api/products?limit=500`);
         const data = await response.json();
         setProducts(data);
       } catch (error) {

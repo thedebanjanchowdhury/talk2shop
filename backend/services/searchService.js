@@ -50,8 +50,9 @@ async function indexProduct(product) {
     await index.upsert([
         {
         id: _id.toString(),
-    metadata: { title, description, category, subcategory },
-    },
+        values: embedding,
+        metadata: { title, description, category, subcategory },
+      },
     ]);
     return { success: true };
   } catch (err) {

@@ -30,21 +30,12 @@ export default function CategorySlider({ onCategorySelect }) {
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
     
-    // Fetch categories
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(`${BACKEND_URL}/api/products/categories`);
-        if (response.ok) {
-          const data = await response.json();
-          setCategories(data);
-        } else {
-          console.error("Failed to fetch categories");
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    fetchCategories();
+    // Use hardcoded categories directly
+    const predefinedCategories = [
+      "Keyboards", "Mouse", "Monitor", "Speaker", "Headphones", 
+      "Cabinets", "GPU", "CPU", "Power Supply", "Processor", "Storage"
+    ];
+    setCategories(predefinedCategories);
 
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
