@@ -270,15 +270,17 @@ export default function ProductManagement() {
                     className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:outline-none"
                   >
                     <option value="">Select Category</option>
-                    <option value="Computers & Laptops">Computers & Laptops</option>
-                    <option value="Mobile Phones">Mobile Phones</option>
+                    <option value="Keyboards">Keyboards</option>
+                    <option value="Mouse">Mouse</option>
+                    <option value="Monitor">Monitor</option>
+                    <option value="Speaker">Speaker</option>
                     <option value="Headphones">Headphones</option>
-                    <option value="Cameras">Cameras</option>
-                    <option value="Processors">Processors</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Smart Home">Smart Home</option>
-                    <option value="Gaming">Gaming</option>
-                    <option value="Networking">Networking</option>
+                    <option value="Cabinets">Cabinets</option>
+                    <option value="GPU">GPU</option>
+                    <option value="CPU">CPU</option>
+                    <option value="Power Supply">Power Supply</option>
+                    <option value="Processor">Processor</option>
+                    <option value="Storage">Storage</option>
                   </select>
                 </div>
                 <div>

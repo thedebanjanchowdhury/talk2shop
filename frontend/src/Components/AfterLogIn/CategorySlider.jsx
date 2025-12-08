@@ -12,7 +12,6 @@ const iconMapping = {
   "Cabinets": <FaBox />,
   "GPU": <FaFan />,
   "CPU": <FaMicrochip />,
-  "Storage (RAM, ROM)": <FaHdd />,
   "Power Supply": <FaBolt />,
   "Storage": <FaHdd />,
   "Processor": <FaMicrochip />,
