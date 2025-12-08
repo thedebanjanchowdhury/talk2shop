@@ -33,6 +33,8 @@ export default function UserManagement() {
 
   useEffect(() => {
     fetchUsers();
+    const interval = setInterval(fetchUsers, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleDelete = async (id) => {

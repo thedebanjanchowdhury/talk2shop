@@ -19,10 +19,13 @@ export default function ProductManagement() {
 
   useEffect(() => {
     fetchProducts();
+    const interval = setInterval(fetchProducts, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchProducts = async () => {
-    setLoading(true);
+    // Only show loader on initial fetch
+    if (products.length === 0) setLoading(true);
     try {
       const response = await fetch(`${BACKEND_URL}/api/products?limit=1000`);
       if (!response.ok) {

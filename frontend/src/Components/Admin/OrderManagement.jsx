@@ -27,6 +27,8 @@ export default function OrderManagement() {
 
   useEffect(() => {
     fetchOrders();
+    const interval = setInterval(fetchOrders, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleStatusChange = async (orderId, newStatus) => {

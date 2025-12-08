@@ -41,9 +41,9 @@ export default function AdminOverview() {
   const [recentOrders, setRecentOrders] = useState([]);
   const [orderStatusDistrib, setOrderStatusDistrib] = useState({});
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (isBackground = false) => {
     try {
-      setLoading(true);
+      if (!isBackground) setLoading(true);
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
@@ -86,8 +86,8 @@ export default function AdminOverview() {
 
   useEffect(() => {
     fetchDashboardData();
-    // Optional: Auto-refresh every 30 seconds
-    const interval = setInterval(fetchDashboardData, 30000);
+    // Auto-refresh every 3 seconds for near real-time updates
+    const interval = setInterval(() => fetchDashboardData(true), 3000);
     return () => clearInterval(interval);
   }, []);
 
