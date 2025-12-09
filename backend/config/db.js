@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
-
-// Connection cache
 let cached = global.mongoose;
+
+/**
+ * MongoDB Connection, Connection String is Cached for
+ * stopping multiple connections
+ * and redundant connections
+ */
 
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
@@ -14,7 +18,6 @@ async function connectDB(uri) {
   }
 
   if (!cached.promise) {
-    // Verify URI is loaded (print masked version)
     if (!uri) {
         console.error("CRITICAL: MONGODB_URI is undefined!");
         throw new Error("MONGODB_URI is undefined");
@@ -22,7 +25,7 @@ async function connectDB(uri) {
     console.log(`Connecting to MongoDB... (URI starts with: ${uri.substring(0, 15)}...)`);
 
     const opts = {
-      bufferCommands: false, // Turn off buffering to fail fast
+      bufferCommands: false
     };
 
     console.log("Creating new MongoDB connection...");

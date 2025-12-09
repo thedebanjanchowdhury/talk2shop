@@ -1,5 +1,15 @@
 const mongoose = require('mongoose');
 
+/**
+ * Order Schema
+ * @param {Object} user - The user object, linked from user model
+ * @param {Array} items - The items in the order, linked from product model
+ * @param {Object} shippingDetails - The shipping details
+ * @param {String} paymentMethod - The payment method
+ * @param {Number} totalAmount - The total amount
+ * @param {String} status - The status of the order
+ * @param {Date} createdAt - The creation date of the order
+ */
 const OrderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -22,6 +32,16 @@ const OrderSchema = new mongoose.Schema({
       required: true
     }
   }],
+  /**
+   * Shipping Details
+   * @param {String} fullName - The full name of the shipping address
+   * @param {String} email - The email of the shipping address
+   * @param {String} phone - The phone number of the shipping address
+   * @param {String} address - The address of the shipping address
+   * @param {String} city - The city of the shipping address
+   * @param {String} zip - The zip code of the shipping address
+   * @param {String} country - The country of the shipping address
+   */
   shippingDetails: {
     fullName: { type: String, required: true },
     email: { type: String, required: true },
@@ -33,7 +53,7 @@ const OrderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['cod'], // Add other methods here if needed
+    enum: ['cod'], 
     default: 'cod'
   },
   totalAmount: {

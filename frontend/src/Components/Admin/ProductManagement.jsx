@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BACKEND_URL from "../../config.js";
-import { FaEdit, FaTrash, FaPlus, FaTimes } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus, FaTimes, FaSync } from 'react-icons/fa';
 
 export default function ProductManagement() {
   const [products, setProducts] = useState([]);
@@ -19,8 +19,6 @@ export default function ProductManagement() {
 
   useEffect(() => {
     fetchProducts();
-    const interval = setInterval(fetchProducts, 3000);
-    return () => clearInterval(interval);
   }, []);
 
   const fetchProducts = async () => {
@@ -155,24 +153,33 @@ export default function ProductManagement() {
     <div className="bg-white p-6 rounded-lg shadow-md relative">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold text-stone-800">Manage Products</h2>
-        <button 
-          onClick={() => {
-            setEditingProduct(null);
-            setFormData({
-              title: '',
-              description: '',
-              category: '',
-              subcategory: '',
-              price: '',
-              stock: '',
-              images: []
-            });
-            setIsModalOpen(true);
-          }}
-          className="px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
-        >
-          <FaPlus /> Add New Product
-        </button>
+        <div className="flex gap-3">
+          <button 
+            onClick={fetchProducts}
+            className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+            title="Refresh Products"
+          >
+            <FaSync className={loading ? "animate-spin" : ""} />
+          </button>
+          <button 
+            onClick={() => {
+              setEditingProduct(null);
+              setFormData({
+                title: '',
+                description: '',
+                category: '',
+                subcategory: '',
+                price: '',
+                stock: '',
+                images: []
+              });
+              setIsModalOpen(true);
+            }}
+            className="px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+          >
+            <FaPlus /> Add New Product
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto max-h-[70vh] overflow-y-auto custom-scrollbar">

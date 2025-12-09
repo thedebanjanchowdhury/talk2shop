@@ -6,7 +6,15 @@ const Product = require("../models/Product");
 const validate = require("../middlewares/validate");
 const { createCart, addItem } = require("../validators/cartSchemas");
 
-// all carts for user
+/**
+ * @route GET /api/cart
+ * @desc Get all carts for user
+ * @access Private
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Array of carts.
+ * @returns {object} 500 - Server error.
+ */
 router.get("/", auth, async (req, res) => {
   const carts = await Cart.find({ user: req.user._id }).populate(
     "items.product"
@@ -14,7 +22,16 @@ router.get("/", auth, async (req, res) => {
   res.status(200).json(carts);
 });
 
-// get specific cart by name
+/**
+ * @route GET /api/cart/:cartName
+ * @desc Get specific cart by name
+ * @access Private
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Cart object.
+ * @returns {object} 404 - Cart not found.
+ * @returns {object} 500 - Server error.
+ */
 router.get("/:cartName", auth, async (req, res) => {
   try {
     const cart = await Cart.findOne({
@@ -33,7 +50,17 @@ router.get("/:cartName", auth, async (req, res) => {
   }
 });
 
-// create new cart for user
+/**
+ * @route POST /api/cart
+ * @desc Create new cart for user
+ * @access Private
+ * @middleware validate(createCart) - Validates the request body against the createCart schema.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 201 - New cart object.
+ * @returns {object} 400 - Cart already exists.
+ * @returns {object} 500 - Server error.
+ */
 router.post("/", auth, validate(createCart), async (req, res) => {
   const { name } = req.validated.body;
   const exists = await Cart.findOne({ user: req.user._id, name });
@@ -43,7 +70,17 @@ router.post("/", auth, validate(createCart), async (req, res) => {
   res.status(201).json(newCart);
 });
 
-// add item to cart
+/**
+ * @route POST /api/cart/add
+ * @desc Add item to cart
+ * @access Private
+ * @middleware validate(addItem) - Validates the request body against the addItem schema.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Cart object.
+ * @returns {object} 404 - Product not found.
+ * @returns {object} 500 - Server error.
+ */
 router.post("/add", auth, validate(addItem), async (req, res) => {
   try {
     const {
@@ -107,7 +144,16 @@ router.post("/add", auth, validate(addItem), async (req, res) => {
   }
 });
 
-// remove item
+/**
+ * @route POST /api/cart/remove
+ * @desc Remove item from cart
+ * @access Private
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Cart object.
+ * @returns {object} 404 - Cart not found.
+ * @returns {object} 500 - Server error.
+ */
 router.post("/remove", auth, async (req, res) => {
   try {
     const { cartName = "default", product: productId } = req.body;
@@ -130,7 +176,16 @@ router.post("/remove", auth, async (req, res) => {
   }
 });
 
-// update item quantity in cart
+/**
+ * @route PUT /api/cart/update-quantity
+ * @desc Update item quantity in cart
+ * @access Private
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Cart object.
+ * @returns {object} 404 - Cart not found.
+ * @returns {object} 500 - Server error.
+ */
 router.put("/update-quantity", auth, async (req, res) => {
   try {
     const { cartName = "default", product: productId, quantity } = req.body;
@@ -181,7 +236,15 @@ router.put("/update-quantity", auth, async (req, res) => {
   }
 });
 
-// delete cart
+/**
+ * @route DELETE /api/cart/:name
+ * @desc Delete cart
+ * @access Private
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Cart deleted.
+ * @returns {object} 500 - Server error.
+ */
 router.delete("/:name", auth, async (req, res) => {
   await Cart.findOneAndDelete({ user: req.user._id, name: req.params.name });
   res.status(200).json({ message: "Cart deleted" });

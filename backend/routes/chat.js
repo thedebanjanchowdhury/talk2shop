@@ -3,6 +3,15 @@ const router = express.Router();
 const { chatWithAgent, streamChatWithAgent } = require("../services/chatService");
 const auth = require("../middlewares/auth"); // Optional: add authentication if needed
 
+/**
+ * @route POST /api/chat
+ * @desc Chat with agent
+ * @access Private
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Chat response.
+ * @returns {object} 500 - Server error.
+ */
 router.post("/", async (req, res) => {
   try {
     const { query } = req.body;
@@ -16,10 +25,8 @@ router.post("/", async (req, res) => {
 
     console.log(`[Chat API] Received query: "${query}"`);
     
-    // Call the chat agent
     const result = await chatWithAgent(query);
     
-    // Check for errors in the result
     if (result.error) {
       console.error("[Chat API] Agent returned error:", result.error);
       return res.status(500).json(result);
@@ -37,6 +44,15 @@ router.post("/", async (req, res) => {
   }
 });
 
+/**
+ * @route POST /api/chat/stream
+ * @desc Chat with agent in stream
+ * @access Private
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Chat response.
+ * @returns {object} 500 - Server error.
+ */
 router.post("/stream", async (req, res) => {
     try {
       const { query } = req.body;
@@ -53,8 +69,6 @@ router.post("/stream", async (req, res) => {
   
       for await (const chunk of streamChatWithAgent(query)) {
         if (chunk) {
-            // Send chunk as a JSON string prefixed with "data: " and two newlines
-            // We verify chunk is string (which we ensured in service)
             res.write(`data: ${JSON.stringify({ output: chunk })}\n\n`);
         }
       }
@@ -69,9 +83,13 @@ router.post("/stream", async (req, res) => {
     }
   });
 
-/**
- * GET /api/chat/health
- * Health check endpoint for chat service
+  /**
+ * @route GET /api/chat/health
+ * @desc Health check endpoint for chat service
+ * @access Public
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Health check response.
  */
 router.get("/health", (req, res) => {
   const hasGroqKey = !!process.env.GROQ_API_KEY;

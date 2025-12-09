@@ -1,5 +1,17 @@
 const mongoose = require("mongoose");
 
+/**
+ * Product Schema
+ * @param {String} title - The title of the product
+ * @param {String} description - The description of the product
+ * @param {String} category - The category of the product
+ * @param {String} subcategory - The subcategory of the product
+ * @param {Number} price - The price of the product
+ * @param {Number} stock - The stock of the product
+ * @param {Array} images - The images of the product
+ * @param {Date} createdAt - The creation date of the product
+ * @param {Date} updatedAt - The update date of the product
+ */
 const productSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String },
@@ -12,6 +24,13 @@ const productSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
+/**
+ * Product Index, for full-text search capabilities across title, description, and categories.
+ * @param {String} title - The title of the product
+ * @param {String} description - The description of the product
+ * @param {String} category - The category of the product
+ * @param {String} subcategory - The subcategory of the product
+ */
 productSchema.index(
   {
     title: "text",

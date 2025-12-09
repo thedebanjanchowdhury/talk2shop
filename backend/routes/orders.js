@@ -5,7 +5,16 @@ const adminOnly = require('../middlewares/adminOnly');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 
-// Create a new order
+/**
+ * @route POST /api/orders
+ * @desc Create a new order
+ * @access Private
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 201 - New order object.
+ * @returns {object} 400 - No items in order.
+ * @returns {object} 500 - Server error.
+ */
 router.post('/', auth, async (req, res) => {
   try {
     const { items, shippingDetails, paymentMethod, totalAmount } = req.body;
@@ -29,10 +38,6 @@ router.post('/', auth, async (req, res) => {
 
     const savedOrder = await order.save();
 
-    // Optional: Clear user's cart after successful order if it wasn't a "Buy Now" (single item)
-    // For now, we can just clear the cart regardless or let the frontend handle it.
-    // A robust implementation would check if this order came from the cart.
-    // Let's assume typical flow clears cart.
     await Cart.findOneAndDelete({ user: req.user.id });
 
     res.status(201).json(savedOrder);
@@ -42,7 +47,15 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-// Get user's orders
+/**
+ * @route GET /api/orders/my-orders
+ * @desc Get user's orders
+ * @access Private
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - User's orders.
+ * @returns {object} 500 - Server error.
+ */
 router.get('/my-orders', auth, async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.id }).sort({ createdAt: -1 }).populate('items.product');
@@ -53,9 +66,16 @@ router.get('/my-orders', auth, async (req, res) => {
   }
 });
 
-// --- Admin Routes ---
-
-// Get all orders (Admin only)
+/**
+ * @route GET /api/orders/admin/all
+ * @desc Get all orders (Admin only)
+ * @access Private
+ * @middleware adminOnly - Ensures the user is an admin.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - All orders.
+ * @returns {object} 500 - Server error.
+ */
 router.get('/admin/all', auth, adminOnly, async (req, res) => {
   try {
     const orders = await Order.find()
@@ -69,7 +89,16 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
   }
 });
 
-// Update order status (Admin only)
+/**
+ * @route PUT /api/orders/admin/:id/status
+ * @desc Update order status (Admin only)
+ * @access Private
+ * @middleware adminOnly - Ensures the user is an admin.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Updated order.
+ * @returns {object} 500 - Server error.
+ */
 router.put('/admin/:id/status', auth, adminOnly, async (req, res) => {
   try {
     const { status } = req.body;
@@ -88,7 +117,16 @@ router.put('/admin/:id/status', auth, adminOnly, async (req, res) => {
   }
 });
 
-// Delete order (Admin only)
+/**
+ * @route DELETE /api/orders/admin/:id
+ * @desc Delete order (Admin only)
+ * @access Private
+ * @middleware adminOnly - Ensures the user is an admin.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Order deleted successfully.
+ * @returns {object} 500 - Server error.
+ */
 router.delete('/admin/:id', auth, adminOnly, async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);

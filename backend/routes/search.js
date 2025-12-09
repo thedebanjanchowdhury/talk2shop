@@ -3,6 +3,15 @@ const router = express.Router();
 const Product = require("../models/Product");
 const { semanticSearch } = require("../services/searchService.js");
 
+/**
+ * @route GET /api/search
+ * @desc Search products
+ * @access Public
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - List of products.
+ * @returns {object} 500 - Server error.
+ */
 router.get("/", async (req, res) => {
   const q = req.query.q || "";
   const category = req.query.category || "";

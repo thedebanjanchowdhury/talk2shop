@@ -16,7 +16,8 @@ const { indexProduct, semanticSearch, deleteProductVector } = require("../servic
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Helper: upload buffer to Cloudinary
+
+
 const uploadToCloudinary = async (fileBuffer, filename) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -30,11 +31,15 @@ const uploadToCloudinary = async (fileBuffer, filename) => {
   });
 };
 
-// ==========================================
-// 1. SPECIFIC GET ROUTES (Must come FIRST)
-// ==========================================
-
-// --- GET distinct categories ---
+/**
+ * @route GET /api/products/categories
+ * @desc Get distinct categories
+ * @access Public
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Distinct categories.
+ * @returns {object} 500 - Server error.
+ */
 router.get("/categories", async (req, res) => {
   try {
     const categories = await product.distinct("category");
@@ -44,7 +49,15 @@ router.get("/categories", async (req, res) => {
   }
 });
 
-// --- Semantic Search ---
+/**
+ * @route GET /api/products/semantic
+ * @desc Semantic search
+ * @access Public
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Search results.
+ * @returns {object} 500 - Server error.
+ */
 router.get("/semantic", async (req, res) => {
   try {
     const { q, category, subcategory, topK } = req.query;
@@ -59,7 +72,7 @@ router.get("/semantic", async (req, res) => {
     const ids = results.map((r) => r.id);
     const products = await product.find({ _id: { $in: ids } });
 
-    // Merge mongo data with vector scores
+    // Fetch full product details for the IDs returned by the semantic search, then merge with scores
     const finalResults = results
       .map((r) => {
         const p = products.find((prod) => prod._id.toString() === r.id);
@@ -74,25 +87,29 @@ router.get("/semantic", async (req, res) => {
   }
 });
 
-// --- HYBRID/TEXT Search (OPTIMISED) ---
+/**
+ * @route GET /api/products/text-search
+ * @desc Text search (Hybrid)
+ * @access Public
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Search results.
+ * @returns {object} 500 - Server error.
+ */
 router.get("/text-search", async (req, res) => {
   try {
     const { q } = req.query;
     if (!q) return res.status(400).json({ message: "Query is required" });
-
-    // Ensure DB connection for this request (serverless handling)
     try {
         await require("../config/db")(process.env.MONGODB_URI);
     } catch (dbErr) {
         console.error("Route Connection Error:", dbErr);
-        // FIX: Stop execution if DB fails
         return res.status(500).json({ message: "Database connection failed" });
     }
-
-    // Create a flexible regex for case-insensitive partial matching
     const searchRegex = new RegExp(q, 'i'); 
 
-    // OPTIMISATION: Let MongoDB do the filtering, not Node.js RAM
+
+    
     const results = await product.find({
         $or: [
             { title: searchRegex },
@@ -112,7 +129,15 @@ router.get("/text-search", async (req, res) => {
   }
 });
 
-// --- GET list of products (Pagination) ---
+/**
+ * @route GET /api/products
+ * @desc Get list of products (Pagination)
+ * @access Public
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - List of products.
+ * @returns {object} 500 - Server error.
+ */
 router.get("/", async (req, res) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
@@ -133,7 +158,16 @@ router.get("/", async (req, res) => {
 // 2. DYNAMIC / WILDCARD ROUTES (Must come LAST)
 // ==========================================
 
-// --- GET product by ID ---
+/**
+ * @route GET /api/products/:id
+ * @desc Get product by ID
+ * @access Public
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Product.
+ * @returns {object} 404 - Product not found.
+ * @returns {object} 500 - Server error.
+ */
 router.get("/:id", async (req, res) => {
   try {
     const p = await product.findById(req.params.id);
@@ -148,7 +182,18 @@ router.get("/:id", async (req, res) => {
 // 3. POST / PUT / DELETE ROUTES
 // ==========================================
 
-// --- CREATE Product ---
+/**
+ * @route POST /api/products
+ * @desc Create a new product
+ * @access Private
+ * @middleware auth - Ensures the user is authenticated.
+ * @middleware adminOnly - Ensures the user is an admin.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 201 - New product object.
+ * @returns {object} 400 - No files uploaded.
+ * @returns {object} 500 - Server error.
+ */
 router.post(
   "/",
   auth,
@@ -186,7 +231,18 @@ router.post(
   }
 );
 
-// --- UPDATE product ---
+/**
+ * @route PUT /api/products/:id
+ * @desc Update a product
+ * @access Private
+ * @middleware auth - Ensures the user is authenticated.
+ * @middleware adminOnly - Ensures the user is an admin.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Updated product object.
+ * @returns {object} 404 - Product not found.
+ * @returns {object} 500 - Server error.
+ */
 router.put(
   "/:id",
   auth,
@@ -241,7 +297,18 @@ router.put(
   }
 );
 
-// --- DELETE product ---
+/**
+ * @route DELETE /api/products/:id
+ * @desc Delete a product
+ * @access Private
+ * @middleware auth - Ensures the user is authenticated.
+ * @middleware adminOnly - Ensures the user is an admin.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Product deleted successfully.
+ * @returns {object} 404 - Product not found.
+ * @returns {object} 500 - Server error.
+ */
 router.delete("/:id", auth, adminOnly, async (req, res) => {
   try {
     const p = await product.findByIdAndDelete(req.params.id);
