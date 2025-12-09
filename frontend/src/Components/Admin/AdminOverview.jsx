@@ -47,14 +47,14 @@ export default function AdminOverview() {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [usersRes, productsRes, ordersRes] = await Promise.all([
+      const [usersRes, productsStatsRes, ordersRes] = await Promise.all([
         fetch(`${BACKEND_URL}/api/users`, { headers }),
-        fetch(`${BACKEND_URL}/api/products`),
+        fetch(`${BACKEND_URL}/api/products/stats`),
         fetch(`${BACKEND_URL}/api/orders/admin/all`, { headers })
       ]);
 
       const users = await usersRes.json();
-      const products = await productsRes.json();
+      const productStats = await productsStatsRes.json();
       const orders = await ordersRes.json();
 
       // Calculations
@@ -69,7 +69,7 @@ export default function AdminOverview() {
       setStats({
         revenue: totalRevenue.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }),
         users: Array.isArray(users) ? users.filter(u => !u.isAdmin).length : 0,
-        products: Array.isArray(products) ? products.length : 0,
+        products: productStats.total || 0,
         orders: Array.isArray(orders) ? orders.length : 0,
         pendingOrdersCount: pendingOrders
       });
@@ -86,9 +86,6 @@ export default function AdminOverview() {
 
   useEffect(() => {
     fetchDashboardData();
-    // Auto-refresh every 3 seconds for near real-time updates
-    const interval = setInterval(() => fetchDashboardData(true), 3000);
-    return () => clearInterval(interval);
   }, []);
 
   if (loading) return (

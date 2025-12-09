@@ -147,11 +147,30 @@ router.get("/", async (req, res) => {
       .find()
       .skip(skip)
       .limit(limit)
+      .limit(limit)
       .sort({ createdAt: -1 });
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
+
+/**
+ * @route GET /api/products/stats
+ * @desc Get product statistics (count)
+ * @access Public
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - Product stats.
+ * @returns {object} 500 - Server error.
+ */
+router.get("/stats", async (req, res) => {
+    try {
+        const total = await product.countDocuments();
+        res.json({ total });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
 // ==========================================
