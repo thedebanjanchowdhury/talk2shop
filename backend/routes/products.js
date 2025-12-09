@@ -147,7 +147,6 @@ router.get("/", async (req, res) => {
       .find()
       .skip(skip)
       .limit(limit)
-      .limit(limit)
       .sort({ createdAt: -1 });
     res.json(products);
   } catch (err) {

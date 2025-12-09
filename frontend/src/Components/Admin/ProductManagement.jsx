@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import BACKEND_URL from "../../config.js";
-import { FaEdit, FaTrash, FaPlus, FaTimes, FaSync } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus, FaTimes, FaSync, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 export default function ProductManagement() {
   const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 50; // Optimized limit
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
@@ -18,24 +22,36 @@ export default function ProductManagement() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts(currentPage);
+  }, [currentPage]);
 
-  const fetchProducts = async () => {
-    // Only show loader on initial fetch
-    if (products.length === 0) setLoading(true);
+  const fetchProducts = async (page = 1) => {
+    setLoading(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/products?limit=1000`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch products');
-      }
-      const data = await response.json();
+      // Parallel fetch: products for current page + total stats for pagination
+      const [productsRes, statsRes] = await Promise.all([
+        fetch(`${BACKEND_URL}/api/products?page=${page}&limit=${limit}`),
+        fetch(`${BACKEND_URL}/api/products/stats`)
+      ]);
+
+      if (!productsRes.ok || !statsRes.ok) throw new Error('Failed to fetch data');
+
+      const data = await productsRes.json();
+      const stats = await statsRes.json();
+
       setProducts(Array.isArray(data) ? data : []);
+      setTotalPages(Math.ceil((stats.total || 0) / limit));
     } catch (error) {
       console.error('Error fetching products:', error);
-      alert('Failed to load products from database');
+      alert(`Failed to load products: ${error.message}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
     }
   };
 
@@ -155,7 +171,7 @@ export default function ProductManagement() {
         <h2 className="text-2xl font-semibold text-stone-800">Manage Products</h2>
         <div className="flex gap-3">
           <button 
-            onClick={fetchProducts}
+            onClick={() => fetchProducts(currentPage)}
             className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
             title="Refresh Products"
           >
@@ -232,6 +248,30 @@ export default function ProductManagement() {
             )}
           </tbody>
         </table>
+      </div>
+
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-4 px-4 bg-gray-50 py-3 rounded-lg border border-gray-200">
+        <span className="text-sm text-gray-600">
+          Page <span className="font-semibold text-gray-900">{currentPage}</span> of <span className="font-semibold text-gray-900">{totalPages}</span>
+        </span>
+        <div className="flex gap-2">
+            <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1 || loading}
+                className="px-3 py-1 bg-white border border-gray-300 rounded text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+                <FaChevronLeft />
+            </button>
+            <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages || loading}
+                className="px-3 py-1 bg-white border border-gray-300 rounded text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+                <FaChevronRight />
+            </button>
+        </div>
       </div>
 
       {/* Add/Edit Product Modal */}
