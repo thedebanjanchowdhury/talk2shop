@@ -4,6 +4,7 @@ const auth = require('../middlewares/auth');
 const adminOnly = require('../middlewares/adminOnly');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
+const { updateStat } = require('../services/statsService');
 
 /**
  * @route POST /api/orders
@@ -37,6 +38,10 @@ router.post('/', auth, async (req, res) => {
     });
 
     const savedOrder = await order.save();
+    
+    // Update dashboard stats
+    await updateStat('totalOrders', 1);
+    await updateStat('totalRevenue', totalAmount);
 
     await Cart.findOneAndDelete({ user: req.user.id });
 

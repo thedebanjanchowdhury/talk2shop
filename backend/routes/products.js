@@ -11,6 +11,7 @@ const {
 const multer = require("multer");
 const cloudinary = require("../config/cloudinary");
 const { indexProduct, semanticSearch, deleteProductVector } = require("../services/searchService");
+const { updateStat } = require("../services/statsService");
 
 // Multer memory storage (no disk)
 const storage = multer.memoryStorage();
@@ -163,10 +164,28 @@ router.get("/", async (req, res) => {
  * @returns {object} 200 - Product stats.
  * @returns {object} 500 - Server error.
  */
+const { getStats } = require("../services/statsService");
+
+/**
+ * @route GET /api/products/stats
+ * @desc Get system statistics (cached)
+ * @access Public
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {object} 200 - System stats.
+ * @returns {object} 500 - Server error.
+ */
 router.get("/stats", async (req, res) => {
     try {
-        const total = await product.countDocuments();
-        res.json({ total });
+        const stats = await getStats();
+        // Return structured data. 'total' is kept for backward compatibility with pagination
+        res.json({ 
+            total: stats.totalProducts, 
+            products: stats.totalProducts,
+            users: stats.totalUsers,
+            orders: stats.totalOrders,
+            revenue: stats.totalRevenue
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -237,6 +256,7 @@ router.post(
 
       const prod = new product({ ...data, images });
       const savedProduct = await prod.save();
+      await updateStat('totalProducts', 1);
       await indexProduct(savedProduct);
       savedProduct.vectorId = savedProduct._id.toString();
       await savedProduct.save();
@@ -342,7 +362,9 @@ router.delete("/:id", auth, adminOnly, async (req, res) => {
       }
     }
 
+
     await deleteProductVector(p._id.toString());
+    await updateStat('totalProducts', -1);
     res.json({ message: "Product deleted" });
   } catch (err) {
     console.error(err);

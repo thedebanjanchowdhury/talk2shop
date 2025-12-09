@@ -5,6 +5,7 @@ const User = require("../models/User");
 const { register, login } = require("../validators/authSchemas");
 const validate = require("../middlewares/validate");
 const connectDB = require("../config/db");
+const { updateStat } = require("../services/statsService");
 
 /**
  * @route POST /api/auth/register
@@ -33,6 +34,7 @@ router.post("/register", validate(register), async (req, res) => {
       return res.status(400).json({ message: "Email already exists" });
     const user = await User.create({ name, email, password, address, isAdmin });
     await user.save();
+    if (!isAdmin) await updateStat('totalUsers', 1); // Only count customers
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES,
     });

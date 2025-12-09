@@ -47,18 +47,15 @@ export default function AdminOverview() {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [usersRes, productsStatsRes, ordersRes] = await Promise.all([
-        fetch(`${BACKEND_URL}/api/users`, { headers }),
+      const [productsStatsRes, ordersRes] = await Promise.all([
         fetch(`${BACKEND_URL}/api/products/stats`),
         fetch(`${BACKEND_URL}/api/orders/admin/all`, { headers })
       ]);
 
-      const users = await usersRes.json();
-      const productStats = await productsStatsRes.json();
+      const systemStats = await productsStatsRes.json();
       const orders = await ordersRes.json();
 
-      // Calculations
-      const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+      // Calculations for charts/status (still need orders list for now)
       const pendingOrders = orders.filter(o => o.status === 'pending').length;
       
       const statusCounts = orders.reduce((acc, order) => {
@@ -67,10 +64,10 @@ export default function AdminOverview() {
       }, {});
 
       setStats({
-        revenue: totalRevenue.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }),
-        users: Array.isArray(users) ? users.filter(u => !u.isAdmin).length : 0,
-        products: productStats.total || 0,
-        orders: Array.isArray(orders) ? orders.length : 0,
+        revenue: (systemStats.revenue || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }),
+        users: systemStats.users || 0,
+        products: systemStats.products || 0,
+        orders: systemStats.orders || 0,
         pendingOrdersCount: pendingOrders
       });
 
