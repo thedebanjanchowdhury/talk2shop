@@ -1,6 +1,5 @@
 const express = require("express");
 const connectDB = require("./config/db");
-const path = require("path");
 const cors = require("cors");
 require("dotenv").config(); // Simply load .env if present
 
@@ -12,11 +11,11 @@ const searchRoutes = require("./routes/search");
 const chatRoutes = require("./routes/chat");
 
 const app = express();
-app.use(cors({ origin: process.env.FRONTEND_URL || "*" }));
+app.use(cors({
+  origin: [process.env.FRONTEND_URL, "http://localhost:5173", "http://localhost:5174", "http://localhost:5000"].filter(Boolean),
+  credentials: true
+}));
 app.use(express.json({ limit: "5mb" }));
-
-// static uploads - might fail on vercel if dir missing, keep simple
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes
 app.use("/api/auth", authRoutes);

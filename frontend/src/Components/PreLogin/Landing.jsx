@@ -19,10 +19,6 @@ export default function Landing({ handleLogin }) {
         setShowAuthDialog('signin');
     }
 
-    // Handler for the Try Demo button
-    const handleTryDemo = () => {
-        console.log("Try Demo clicked!");
-    }
 
     return (
         // Main container with light background, matching the image design
@@ -61,14 +57,6 @@ export default function Landing({ handleLogin }) {
                         Get Started
                     </button>
 
-                    {/* Try Demo Button */}
-                    <button 
-                        className="flex items-center gap-2 px-8 py-3 rounded-full text-lg font-semibold border-2 border-stone-400 text-stone-800 hover:bg-stone-100 transition duration-300 relative overflow-hidden"
-                        onClick={handleTryDemo}
-                    >
-                        Try Demo
-                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-500 via-blue-500 to-green-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 animate-pulse-light"></div>
-                    </button>
                 </div>
             </div>
             

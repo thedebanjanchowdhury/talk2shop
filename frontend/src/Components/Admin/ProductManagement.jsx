@@ -28,19 +28,25 @@ export default function ProductManagement() {
   const fetchProducts = async (page = 1) => {
     setLoading(true);
     try {
-      // Parallel fetch: products for current page + total stats for pagination
-      const [productsRes, statsRes] = await Promise.all([
-        fetch(`${BACKEND_URL}/api/products?page=${page}&limit=${limit}`),
-        fetch(`${BACKEND_URL}/api/products/stats`)
-      ]);
-
-      if (!productsRes.ok || !statsRes.ok) throw new Error('Failed to fetch data');
-
+      // 1. Fetch Products (Critical)
+      const productsRes = await fetch(`${BACKEND_URL}/api/products?page=${page}&limit=${limit}`);
+      if (!productsRes.ok) throw new Error('Failed to fetch products');
       const data = await productsRes.json();
-      const stats = await statsRes.json();
-
       setProducts(Array.isArray(data) ? data : []);
-      setTotalPages(Math.ceil((stats.total || 0) / limit));
+
+      // 2. Fetch Stats for Pagination (Non-blocking)
+      try {
+        const statsRes = await fetch(`${BACKEND_URL}/api/products/stats`);
+        if (statsRes.ok) {
+            const stats = await statsRes.json();
+            setTotalPages(Math.ceil((stats.total || 0) / limit));
+        }
+      } catch (statsErr) {
+        console.warn('Failed to load pagination stats:', statsErr);
+        // Fallback: If we have products but no stats, assume at least current page exists
+        if (data && data.length > 0 && totalPages === 0) setTotalPages(1);
+      }
+
     } catch (error) {
       console.error('Error fetching products:', error);
       alert(`Failed to load products: ${error.message}`);

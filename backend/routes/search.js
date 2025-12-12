@@ -2,6 +2,34 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 const { semanticSearch } = require("../services/searchService.js");
+const { TavilyClient } = require("tavily");
+
+const tavily = new TavilyClient({ apiKey: process.env.TAVILY_API_KEY });
+
+/**
+ * @route GET /api/search/news
+ * @desc Search for tech news using Tavily
+ * @access Public
+ */
+router.get("/news", async (req, res) => {
+  try {
+    const { q } = req.query;
+    // Force the query to be tech-related news
+    const searchQuery = q ? `${q} technology news` : "latest technology news";
+    
+    // Perform search using Tavily
+    const response = await tavily.search(searchQuery, {
+      topic: "news",
+      days: 7, 
+      max_results: 5
+    });
+
+    res.json(response);
+  } catch (error) {
+    console.error("Tavily News Search Error:", error);
+    res.status(500).json({ message: "Failed to fetch news", error: error.message });
+  }
+});
 
 /**
  * @route GET /api/search

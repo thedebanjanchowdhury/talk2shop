@@ -206,7 +206,7 @@ const streamChatWithAgent = async function* (query) {
     Other Rules:
     - DO NOT recommend components from the general internet if they are not in our DB.
     - If a specific part is not found in the full inventory list, say "I don't have [Part Name]".
-    - You may use the internet (Tavily) ONLY for general educational queries (e.g. "what is a GPU?"), NOT for checking stock/prices.`;
+    - You may use the internet (Tavily) ONLY for general educational queries (e.g. "what is a GPU?", "News On Gaming/PC Building" etc.), NOT for checking stock/prices.`;
 
     try {
         console.log(`[Stream] invoking agent with query: ${query}`);
@@ -216,11 +216,8 @@ const streamChatWithAgent = async function* (query) {
         );
 
         for await (const event of stream) {
-            // console.log("Event:", event.event, event.name); // Debug logging
-            
             if (event.event === "on_chat_model_stream") {
                 const content = event.data.chunk?.content;
-                // Only yield if content is a non-empty string
                 if (content && typeof content === "string") {
                     yield content;
                 }
